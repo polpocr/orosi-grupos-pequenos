@@ -2,8 +2,10 @@
 
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { useUser, UserButton } from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
+import StatsCard from "../components/admin/shared/StatsCard";
+import { Users, Calendar, TrendingUp } from "lucide-react";
 
 export default function AdminPage() {
   const { user, isLoaded } = useUser();
@@ -28,86 +30,74 @@ export default function AdminPage() {
   if (!isLoaded) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <div className="text-lg">Cargando...</div>
+        <div className="text-lg text-white">Cargando...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-8">
-      <div className="mx-auto max-w-4xl">
-        {/* Header */}
-        <div className="mb-8 rounded-lg bg-white p-6 shadow-md">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-slate-800">
-                Panel de Administración
-              </h1>
-              <p className="mt-2 text-slate-600">
-                Bienvenido, {user?.firstName || user?.emailAddresses[0].emailAddress}
-              </p>
-            </div>
-            {/* Botón de logout */}
-            <UserButton afterSignOutUrl="/" />
-          </div>
-        </div>
+    <div className="space-y-8">
+      {/* Welcome Section */}
+      <div>
+        <h2 className="text-3xl font-bold text-white">
+          Bienvenido, {user?.firstName || user?.emailAddresses[0].emailAddress}
+        </h2>
+        <p className="text-slate-400 mt-1">
+          Aquí está el resumen de tu panel de administración
+        </p>
+      </div>
 
-        {/* User Info Card */}
-        <div className="mb-6 rounded-lg bg-white p-6 shadow-md">
-          <h2 className="mb-4 text-xl font-semibold text-slate-800">
-            Información del Usuario
-          </h2>
-          <div className="space-y-2">
-            <p className="text-slate-700">
-              <span className="font-medium">Email:</span>{" "}
-              {user?.emailAddresses[0].emailAddress}
-            </p>
-            <p className="text-slate-700">
-              <span className="font-medium">ID:</span> {user?.id}
-            </p>
-            <p className="text-slate-700">
-              <span className="font-medium">Nombre:</span>{" "}
-              {user?.fullName || "No configurado"}
-            </p>
-          </div>
-        </div>
+      {/* Statistics Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <StatsCard
+          title="Total Usuarios"
+          value="1,234"
+          change="+20% desde el mes pasado"
+          icon={<Users className="w-5 h-5" />}
+          trend="up"
+        />
+        <StatsCard
+          title="Grupos Activos"
+          value="42"
+          change="+3 grupos nuevos este mes"
+          icon={<Calendar className="w-5 h-5" />}
+          trend="up"
+        />
+        <StatsCard
+          title="Tasa de Crecimiento"
+          value="+12.5%"
+          change="Comparado con el trimestre anterior"
+          icon={<TrendingUp className="w-5 h-5" />}
+          trend="up"
+        />
+      </div>
 
-        {/* Convex Query Result */}
-        <div className="rounded-lg bg-white p-6 shadow-md">
-          <h2 className="mb-4 text-xl font-semibold text-slate-800">
-            Datos de Convex (Query Protegida)
-          </h2>
-          {adminData === undefined ? (
-            <p className="text-slate-600">Cargando datos...</p>
-          ) : adminData === null ? (
-            <div className="rounded-md bg-red-50 p-4 text-red-800">
+      {/* Admin Data Section - Optional, can be removed if not needed */}
+      {adminData !== undefined && (
+        <div className="bg-[#2A2929] border border-[#3A3939] rounded-lg p-6">
+          <h3 className="text-xl font-semibold text-white mb-4">
+            Estado de Autenticación
+          </h3>
+          {adminData === null ? (
+            <div className="rounded-md bg-red-900/20 border border-red-900/30 p-4 text-red-400">
               <p className="font-medium">Error de Autorización</p>
               <p className="mt-1 text-sm">
                 Tu email no está registrado como administrador en la base de datos.
               </p>
             </div>
           ) : (
-            <div className="rounded-md bg-green-50 p-4">
-              <p className="font-medium text-green-800">
+            <div className="rounded-md bg-green-900/20 border border-green-900/30 p-4">
+              <p className="font-medium text-green-400">
                 {adminData.message}
               </p>
-              <div className="mt-3 space-y-1 text-sm text-green-700">
+              <div className="mt-3 space-y-1 text-sm text-green-500">
                 <p>Email autorizado: {adminData.user.email}</p>
                 <p>Nombre: {adminData.user.name}</p>
               </div>
             </div>
           )}
         </div>
-
-        {/* Info Box */}
-        <div className="mt-6 rounded-lg border-2 border-blue-200 bg-blue-50 p-4">
-          <p className="text-sm text-blue-800">
-            💡 <span className="font-medium">Nota:</span> Esta página está protegida
-            por el middleware. Solo usuarios autenticados pueden verla. Además, la
-            query de Convex solo permite acceso a usuarios con role "admin" en la base de datos.
-          </p>
-        </div>
-      </div>
+      )}
     </div>
   );
 }

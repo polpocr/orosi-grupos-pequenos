@@ -1,5 +1,5 @@
 import Image from "next/image";
-import GroupsSection from "./components/groups/GroupsSection";
+import GroupsSection from "../components/groups/GroupsSection";
 
 export default function HomePage() {
   return (
