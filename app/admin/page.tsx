@@ -39,10 +39,10 @@ export default function AdminPage() {
     <div className="space-y-8">
       {/* Welcome Section */}
       <div>
-        <h2 className="text-3xl font-bold text-white">
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-white">
           Bienvenido, {user?.firstName || user?.emailAddresses[0].emailAddress}
         </h2>
-        <p className="text-slate-400 mt-1">
+        <p className="text-slate-600 dark:text-slate-400 mt-1">
           Aquí está el resumen de tu panel de administración
         </p>
       </div>
@@ -52,45 +52,45 @@ export default function AdminPage() {
         <StatsCard
           title="Total Usuarios"
           value="1,234"
-          change="+20% desde el mes pasado"
-          icon={<Users className="w-5 h-5" />}
+          trendValue="+20% desde el mes pasado"
+          icon={Users}
           trend="up"
         />
         <StatsCard
           title="Grupos Activos"
           value="42"
-          change="+3 grupos nuevos este mes"
-          icon={<Calendar className="w-5 h-5" />}
+          trendValue="+3 grupos nuevos este mes"
+          icon={Calendar}
           trend="up"
         />
         <StatsCard
           title="Tasa de Crecimiento"
           value="+12.5%"
-          change="Comparado con el trimestre anterior"
-          icon={<TrendingUp className="w-5 h-5" />}
+          trendValue="Comparado con el trimestre anterior"
+          icon={TrendingUp}
           trend="up"
         />
       </div>
 
       {/* Admin Data Section - Optional, can be removed if not needed */}
       {adminData !== undefined && (
-        <div className="bg-[#2A2929] border border-[#3A3939] rounded-lg p-6">
-          <h3 className="text-xl font-semibold text-white mb-4">
+        <div className="bg-white dark:bg-dark-border border border-slate-200 dark:border-dark-border-light rounded-lg p-6">
+          <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
             Estado de Autenticación
           </h3>
           {adminData === null ? (
-            <div className="rounded-md bg-red-900/20 border border-red-900/30 p-4 text-red-400">
+            <div className="rounded-md bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 p-4 text-red-700 dark:text-red-400">
               <p className="font-medium">Error de Autorización</p>
               <p className="mt-1 text-sm">
                 Tu email no está registrado como administrador en la base de datos.
               </p>
             </div>
           ) : (
-            <div className="rounded-md bg-green-900/20 border border-green-900/30 p-4">
-              <p className="font-medium text-green-400">
+            <div className="rounded-md bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-900/50 p-4">
+              <p className="font-medium text-green-700 dark:text-green-400">
                 {adminData.message}
               </p>
-              <div className="mt-3 space-y-1 text-sm text-green-500">
+              <div className="mt-3 space-y-1 text-sm text-green-600 dark:text-green-500">
                 <p>Email autorizado: {adminData.user.email}</p>
                 <p>Nombre: {adminData.user.name}</p>
               </div>

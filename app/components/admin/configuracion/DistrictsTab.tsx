@@ -20,8 +20,8 @@ export default function DistrictsTab() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h3 className="text-lg font-semibold text-white">Distritos</h3>
-          <p className="text-sm text-slate-400 mt-1">
+          <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Distritos</h3>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
             Gestiona las zonas geográficas para organizar los grupos
           </p>
         </div>
@@ -34,21 +34,21 @@ export default function DistrictsTab() {
       {/* Mobile View - Cards */}
       <div className="md:hidden space-y-3">
         {distritos.map((distrito) => (
-          <div key={distrito.id} className="bg-[#2A2929] border border-[#3A3939] rounded-lg p-4 hover:bg-dark transition-colors">
+          <div key={distrito.id} className="bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-lg p-4 hover:bg-slate-50 dark:hover:bg-neutral-800 transition-colors">
             <div className="flex items-start justify-between mb-3">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-blue-900/20 rounded-lg">
                   <MapPin className="w-5 h-5 text-blue-400" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-medium text-white">{distrito.nombre}</h4>
-                  <p className="text-xs text-slate-400 mt-1">{distrito.descripcion}</p>
+                  <h4 className="text-sm font-medium text-slate-900 dark:text-white">{distrito.nombre}</h4>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{distrito.descripcion}</p>
                 </div>
               </div>
               <Button 
                 variant="ghost" 
                 size="icon"
-                className="text-slate-400 hover:text-white hover:bg-[#3A3939]"
+                className="text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-neutral-800"
               >
                 <MoreHorizontal className="w-5 h-5" />
               </Button>
@@ -69,38 +69,38 @@ export default function DistrictsTab() {
       </div>
 
       {/* Desktop View - Table */}
-      <div className="hidden md:block bg-[#2A2929] border border-[#3A3939] rounded-lg overflow-hidden">
+      <div className="hidden md:block bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-lg overflow-hidden">
         <table className="w-full">
-          <thead className="bg-dark border-b border-[#3A3939]">
+          <thead className="bg-slate-50 dark:bg-neutral-950 border-b border-slate-200 dark:border-neutral-800">
             <tr>
-              <th className="px-6 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
+              <th className="px-6 py-4 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                 Distrito
               </th>
-              <th className="px-6 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
+              <th className="px-6 py-4 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                 Descripción
               </th>
-              <th className="px-6 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
+              <th className="px-6 py-4 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                 Estado
               </th>
-              <th className="px-6 py-4 text-right text-xs font-medium text-slate-400 uppercase tracking-wider">
+              <th className="px-6 py-4 text-right text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                 Acciones
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#3A3939]">
+          <tbody className="divide-y divide-slate-200 dark:divide-neutral-800">
             {distritos.map((distrito) => (
-              <tr key={distrito.id} className="hover:bg-dark transition-colors">
+              <tr key={distrito.id} className="hover:bg-slate-50 dark:hover:bg-neutral-800 transition-colors">
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center gap-3">
                     <div className="p-2 bg-blue-900/20 rounded-lg">
                       <MapPin className="w-5 h-5 text-blue-400" />
                     </div>
-                    <span className="text-sm font-medium text-white">
+                    <span className="text-sm font-medium text-slate-900 dark:text-white">
                       {distrito.nombre}
                     </span>
                   </div>
                 </td>
-                <td className="px-6 py-4 text-sm text-slate-400">
+                <td className="px-6 py-4 text-sm text-slate-500 dark:text-slate-400">
                   {distrito.descripcion}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
@@ -118,7 +118,7 @@ export default function DistrictsTab() {
                   <Button 
                     variant="ghost" 
                     size="icon"
-                    className="text-slate-400 hover:text-white hover:bg-[#3A3939]"
+                    className="text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-neutral-800"
                   >
                     <MoreHorizontal className="w-5 h-5" />
                   </Button>

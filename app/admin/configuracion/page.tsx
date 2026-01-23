@@ -14,16 +14,16 @@ export default function ConfiguracionPage() {
       />
 
       <Tabs defaultValue="categorias" className="w-full">
-        <TabsList className="bg-[#2A2929] border border-[#3A3939]">
+        <TabsList className="bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
           <TabsTrigger 
             value="categorias"
-            className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-slate-400"
+            className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-slate-600 dark:text-slate-400"
           >
             Categorías
           </TabsTrigger>
           <TabsTrigger 
             value="distritos"
-            className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-slate-400"
+            className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-slate-600 dark:text-slate-400"
           >
             Distritos
           </TabsTrigger>

@@ -2,6 +2,8 @@
 // Admin Panel Types
 // ============================================
 
+import { LucideIcon } from "lucide-react";
+
 export interface AdminPageHeaderProps {
   title: string;
   subtitle?: string;
@@ -11,9 +13,9 @@ export interface AdminPageHeaderProps {
 export interface StatsCardProps {
   title: string;
   value: string | number;
-  change?: string;
-  icon: React.ReactNode;
-  trend?: 'up' | 'down' | 'neutral';
+  trend?: string;
+  trendValue?: string;
+  icon?: LucideIcon;
 }
 
 export interface DataTableWrapperProps {
@@ -31,7 +33,7 @@ export interface Temporada {
   nombre: string;
   fechaInicio: string;
   fechaFin: string;
-  estado: 'activa' | 'inactiva' | 'finalizada';
+  estado: string;
   totalGrupos: number;
 }
 
@@ -46,7 +48,7 @@ export interface Grupo {
   distrito: string;
   categoria: string;
   miembros: number;
-  estado: 'activo' | 'inactivo';
+  estado: string;
 }
 
 export interface GroupsToolbarProps {

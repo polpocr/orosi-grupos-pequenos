@@ -1,53 +1,42 @@
 import { StatsCardProps } from "@/app/types/admin";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowDown, ArrowUp, Minus } from "lucide-react";
+import { TrendingUp, TrendingDown } from "lucide-react";
 
 export default function StatsCard({
   title,
   value,
-  change,
-  icon,
-  trend = 'neutral',
+  trend,
+  trendValue,
+  icon: Icon,
 }: StatsCardProps) {
-  const getTrendIcon = () => {
-    switch (trend) {
-      case 'up':
-        return <ArrowUp className="w-4 h-4 text-green-500" />;
-      case 'down':
-        return <ArrowDown className="w-4 h-4 text-red-500" />;
-      default:
-        return <Minus className="w-4 h-4 text-slate-500" />;
-    }
-  };
-
-  const getTrendColor = () => {
-    switch (trend) {
-      case 'up':
-        return 'text-green-500';
-      case 'down':
-        return 'text-red-500';
-      default:
-        return 'text-slate-500';
-    }
-  };
+  const isPositive = trend === "up";
 
   return (
-    <Card className="bg-[#2A2929] border-[#3A3939] hover:border-[#4A4949] transition-colors">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium text-slate-400">
-          {title}
-        </CardTitle>
-        <div className="text-slate-400">{icon}</div>
-      </CardHeader>
-      <CardContent>
-        <div className="text-3xl font-bold text-white mb-1">{value}</div>
-        {change && (
-          <div className={`flex items-center gap-1 text-sm ${getTrendColor()}`}>
-            {getTrendIcon()}
-            <span>{change}</span>
+    <div className="bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-lg p-6 hover:shadow-lg transition-shadow">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-sm font-medium text-slate-600 dark:text-slate-400">{title}</h3>
+        {Icon && <Icon className="w-5 h-5 text-slate-400 dark:text-slate-500" />}
+      </div>
+
+      <div className="space-y-2">
+        <p className="text-3xl font-bold text-slate-900 dark:text-white">{value}</p>
+
+        {trendValue && (
+          <div className="flex items-center gap-1">
+            {isPositive ? (
+              <TrendingUp className="w-4 h-4 text-green-500" />
+            ) : (
+              <TrendingDown className="w-4 h-4 text-red-500" />
+            )}
+            <span
+              className={`text-sm font-medium ${
+                isPositive ? "text-green-500" : "text-red-500"
+              }`}
+            >
+              {trendValue}
+            </span>
           </div>
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

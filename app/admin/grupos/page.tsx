@@ -14,25 +14,25 @@ const grupos: Grupo[] = [
     nombre: "Grupo Jóvenes Fuego",
     lider: "Carlos Méndez",
     distrito: "Norte",
-    categoria: "Jóvenes",
+    categoria: "Bíblico",
     miembros: 15,
     estado: "activo",
   },
   {
     id: "2",
-    nombre: "Matrimonios en Victoria",
+    nombre: "Interés",
     lider: "Ana y Pedro Rodríguez",
     distrito: "Sur",
-    categoria: "Matrimonios",
+    categoria: "Interés",
     miembros: 12,
     estado: "activo",
   },
   {
     id: "3",
-    nombre: "Mujeres de Fe",
+    nombre: "Apoyo",
     lider: "María González",
     distrito: "Este",
-    categoria: "Mujeres",
+    categoria: "Apoyo",
     miembros: 18,
     estado: "activo",
   },
@@ -41,7 +41,7 @@ const grupos: Grupo[] = [
     nombre: "Adultos en Crecimiento",
     lider: "José Ramírez",
     distrito: "Oeste",
-    categoria: "Adultos",
+    categoria: "Acción social",
     miembros: 20,
     estado: "activo",
   },
@@ -73,25 +73,26 @@ export default function GruposPage() {
         }
       />
 
-      <DataTableWrapper toolbar={<GroupsToolbar />}>
+      <DataTableWrapper toolbar={<GroupsToolbar onSearch={() => {}} onDistritoChange={() => {}} onCategoriaChange={() => {}} />}>
         {/* Mobile View - Cards */}
-        <div className="md:hidden divide-y divide-[#3A3939]">
+        {/* Mobile View - Cards */}
+        <div className="md:hidden divide-y divide-slate-200 dark:divide-neutral-800">
           {grupos.map((grupo) => (
-            <div key={grupo.id} className="p-4 hover:bg-dark transition-colors">
+            <div key={grupo.id} className="p-4 hover:bg-slate-50 dark:hover:bg-neutral-800 transition-colors">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-blue-900/20 rounded-lg">
                     <Users className="w-5 h-5 text-blue-400" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-medium text-white">{grupo.nombre}</h3>
+                    <h3 className="text-sm font-medium text-slate-900 dark:text-white">{grupo.nombre}</h3>
                     <p className="text-xs text-slate-400 mt-1">Líder: {grupo.lider}</p>
                   </div>
                 </div>
                 <Button 
                   variant="ghost" 
                   size="icon"
-                  className="text-slate-400 hover:text-white hover:bg-[#3A3939]"
+                  className="text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-dark-border-light"
                 >
                   <MoreHorizontal className="w-5 h-5" />
                 </Button>
@@ -105,7 +106,7 @@ export default function GruposPage() {
               <div className="flex items-center justify-between text-sm">
                 <span className="text-slate-400">{grupo.distrito}</span>
                 <span className="text-slate-400">
-                  <span className="font-medium text-white">{grupo.miembros}</span> miembros
+                  <span className="font-medium text-slate-900 dark:text-white">{grupo.miembros}</span> miembros
                 </span>
               </div>
             </div>
@@ -115,48 +116,48 @@ export default function GruposPage() {
         {/* Desktop View - Table */}
         <div className="hidden md:block overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-dark border-b border-[#3A3939]">
+            <thead className="bg-slate-50 dark:bg-neutral-950 border-b border-slate-200 dark:border-neutral-800">
               <tr>
-                <th className="px-6 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                   Nombre
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
-                  Líder
+                <th className="px-6 py-4 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                  Facilitador
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                   Distrito
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                   Categoría
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                   Miembros
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                   Estado
                 </th>
-                <th className="px-6 py-4 text-right text-xs font-medium text-slate-400 uppercase tracking-wider">
+                <th className="px-6 py-4 text-right text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                   Acciones
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#3A3939]">
+            <tbody className="divide-y divide-slate-200 dark:divide-neutral-800">
               {grupos.map((grupo) => (
-                <tr key={grupo.id} className="hover:bg-dark transition-colors">
+                <tr key={grupo.id} className="hover:bg-slate-50 dark:hover:bg-neutral-800 transition-colors">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-3">
                       <div className="p-2 bg-blue-900/20 rounded-lg">
                         <Users className="w-5 h-5 text-blue-400" />
                       </div>
-                      <span className="text-sm font-medium text-white">
+                      <span className="text-sm font-medium text-slate-900 dark:text-white">
                         {grupo.nombre}
                       </span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-400">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
                     {grupo.lider}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-400">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
                     {grupo.distrito}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -164,7 +165,7 @@ export default function GruposPage() {
                       {grupo.categoria}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-medium">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900 dark:text-white font-medium">
                     {grupo.miembros}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -174,7 +175,7 @@ export default function GruposPage() {
                     <Button 
                       variant="ghost" 
                       size="icon"
-                      className="text-slate-400 hover:text-white hover:bg-[#3A3939]"
+                      className="text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-neutral-800"
                     >
                       <MoreHorizontal className="w-5 h-5" />
                     </Button>

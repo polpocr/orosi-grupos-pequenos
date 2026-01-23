@@ -3,10 +3,20 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  /* Colors */
+  /* Colors - Dark Mode (Default) */
   --color-blue-primary: #06354C;
   --color-blue-secondary: #0F232D;
   --color-dark: #1C1B1B;
+  --color-dark-sidebar: #0F0F0F;
+  --color-dark-border: #2A2929;
+  --color-dark-border-light: #3A3939;
+
+  /* Colors - Light Mode */
+  --color-light: #ffffff;
+  --color-light-sidebar: #f8f9fa;
+  --color-light-border: #e2e8f0;
+  --color-light-text: #1e293b;
+  --color-light-text-secondary: #64748b;
 
   /* Fonts */
   --font-outfit: var(--font-outfit);
@@ -158,3 +168,242 @@ html {
     @apply bg-background text-foreground;
   }
 }
+
+
+/* ============================================
+   Clerk Dark Theme - Minimalista (Solo en Dark Mode)
+   ============================================ */
+
+.dark .cl-internal-b3fm6y {
+  --cl-color-background: #1C1B1B;
+  --cl-color-text: #ffffff;
+  --cl-color-text-secondary: #94a3b8;
+  --cl-color-input-background: #2A2929;
+  --cl-color-input-text: #ffffff;
+  --cl-color-primary: #2563eb;
+  --cl-color-danger: #ef4444;
+  --cl-color-success: #10b981;
+  --cl-color-warning: #f59e0b;
+  --cl-color-neutral: #64748b;
+}
+
+/* Popover */
+.dark .cl-userButtonPopoverCard {
+  background-color: #1C1B1B !important;
+  border: 1px solid #2A2929 !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5) !important;
+}
+
+.dark .cl-userButtonPopoverMain {
+  background-color: #1C1B1B !important;
+  border-bottom: 1px solid #2A2929 !important;
+}
+
+.dark .cl-userPreview {
+  background-color: #1C1B1B !important;
+}
+
+.dark .cl-userPreviewMainIdentifier,
+.dark .cl-userPreviewTextContainer {
+  color: #ffffff !important;
+}
+
+.dark .cl-userPreviewSecondaryIdentifier {
+  color: #94a3b8 !important;
+}
+
+.dark .cl-userButtonPopoverActions {
+  background-color: #1C1B1B !important;
+}
+
+.dark .cl-userButtonPopoverActionButton {
+  background-color: transparent !important;
+  color: #ffffff !important;
+  transition: background-color 0.2s ease !important;
+}
+
+.dark .cl-userButtonPopoverActionButton:hover {
+  background-color: #2A2929 !important;
+}
+
+.dark .cl-userButtonPopoverActionButtonText {
+  color: #ffffff !important;
+}
+
+.dark .cl-userButtonPopoverActionButtonIcon,
+.dark .cl-userButtonPopoverActionButtonIconBox {
+  color: #94a3b8 !important;
+}
+
+.dark .cl-userButtonPopoverFooter {
+  background-color: #1C1B1B !important;
+  border-top: 1px solid #2A2929 !important;
+}
+
+/* Modal de Cuenta */
+.dark .cl-card,
+.dark .cl-modalContent {
+  background-color: #1C1B1B !important;
+  border: 1px solid #2A2929 !important;
+  color: #ffffff !important;
+}
+
+/* Sidebar */
+.dark .cl-navbar,
+.dark .cl-navbarMobileMenuRow {
+  background-color: #0F0F0F !important;
+  border-right: 1px solid #2A2929 !important;
+}
+
+.dark .cl-navbarButton {
+  color: #94a3b8 !important;
+  background-color: transparent !important;
+}
+
+.dark .cl-navbarButton:hover {
+  background-color: #2A2929 !important;
+  color: #ffffff !important;
+}
+
+.dark .cl-navbarButtonActive {
+  background-color: #2563eb !important;
+  color: #ffffff !important;
+}
+
+.dark .cl-navbarButtonIcon {
+  color: #94a3b8 !important;
+}
+
+.dark .cl-navbarButtonActive .cl-navbarButtonIcon {
+  color: #ffffff !important;
+}
+
+/* Contenido */
+.dark .cl-headerTitle,
+.dark .cl-profileSectionTitle,
+.dark .cl-accordionTriggerButton {
+  color: #ffffff !important;
+}
+
+.dark .cl-headerSubtitle,
+.dark .cl-profileSectionContent,
+.dark .cl-profileSectionPrimaryButton,
+.dark .cl-formHeaderTitle {
+  color: #94a3b8 !important;
+}
+
+/* Secciones de perfil - Ajustado para evitar fondo negro extra */
+.dark .cl-profileSection,
+.dark .cl-profileSectionItem {
+  background-color: transparent !important; /* Cambiado de #1C1B1B */
+  border-color: #2A2929 !important;
+}
+
+.dark .cl-profileSectionItem:hover {
+  background-color: #2A2929 !important;
+}
+
+/* Formularios */
+.dark .cl-formFieldLabel,
+.dark .cl-formFieldLabelRow {
+  color: #94a3b8 !important;
+}
+
+.dark .cl-formFieldOptionalText,
+.dark .cl-formFieldHintText {
+  color: #94a3b8 !important;
+}
+
+.dark .cl-formFieldInput,
+.dark .cl-formFieldInputShowPasswordButton,
+.dark .cl-selectButton,
+.dark .cl-otpCodeFieldInput {
+  background-color: #2A2929 !important;
+  border: 1px solid #3A3939 !important;
+  color: #ffffff !important;
+}
+
+.dark .cl-formFieldInput::placeholder {
+  color: #64748b !important;
+}
+
+.dark .cl-formFieldInput:focus,
+.dark .cl-formFieldInput:focus-visible {
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2) !important;
+}
+
+.dark .cl-formButtonPrimary {
+  background-color: #2563eb !important;
+  color: #ffffff !important;
+}
+
+.dark .cl-formButtonPrimary:hover {
+  background-color: #1d4ed8 !important;
+}
+
+.dark .cl-formButtonReset {
+  color: #94a3b8 !important;
+}
+
+.dark .cl-formButtonReset:hover {
+  color: #ffffff !important;
+  background-color: #2A2929 !important;
+}
+
+/* Badges */
+.dark .cl-badge {
+  background-color: rgba(37, 99, 235, 0.2) !important;
+  color: #60a5fa !important;
+  border: 1px solid rgba(37, 99, 235, 0.5) !important;
+}
+
+.dark .cl-dividerLine {
+  background-color: #2A2929 !important;
+}
+
+/* Overlay */
+.dark .cl-modalBackdrop {
+  background-color: rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Footer & Actions */
+.dark .cl-footerActionLink,
+.dark .cl-footerActionText,
+.dark .cl-footer,
+.dark .cl-footerPages,
+.dark .cl-footerPagesLink {
+  color: #94a3b8 !important;
+}
+
+.dark .cl-footerActionLink:hover {
+  color: #ffffff !important;
+}
+
+.dark .cl-identityPreviewText,
+.dark .cl-identityPreviewEditButton {
+  color: #ffffff !important;
+}
+
+.dark .cl-formFieldSuccessText {
+  color: #10b981 !important;
+}
+
+.dark .cl-formFieldErrorText {
+  color: #ef4444 !important;
+}
+
+/* Bordes Generales */
+.dark .cl-card,
+.dark .cl-userButtonPopoverCard,
+.dark .cl-modalContent {
+  box-shadow: none !important;
+  border: 1px solid #2A2929 !important;
+  border-radius: 8px !important;
+}
+
+.dark .cl-formFieldInput,
+.dark .cl-formButtonPrimary {
+  border-radius: 8px !important;
+}
+

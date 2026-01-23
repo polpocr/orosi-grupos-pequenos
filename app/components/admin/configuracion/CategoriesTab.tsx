@@ -7,10 +7,10 @@ import { Categoria } from "@/app/types/admin";
 
 // Mock data
 const categorias: Categoria[] = [
-  { id: "1", nombre: "Jóvenes", descripcion: "Grupos para jóvenes de 18-30 años", color: "#3B82F6", activa: true },
-  { id: "2", nombre: "Adultos", descripcion: "Grupos para adultos de 30+ años", color: "#10B981", activa: true },
-  { id: "3", nombre: "Matrimonios", descripcion: "Grupos para parejas casadas", color: "#F59E0B", activa: true },
-  { id: "4", nombre: "Mujeres", descripcion: "Grupos exclusivos para mujeres", color: "#EC4899", activa: true },
+  { id: "1", nombre: "Bíblico", descripcion: "Grupos para ...", color: "#3B82F6", activa: true },
+  { id: "2", nombre: "Interés", descripcion: "Grupos para ...", color: "#10B981", activa: true },
+  { id: "3", nombre: "Apoyo", descripcion: "Grupos para ...", color: "#F59E0B", activa: true },
+  { id: "4", nombre: "Acción social", descripcion: "Grupos exclusivos ....", color: "#EC4899", activa: true },
 ];
 
 export default function CategoriesTab() {
@@ -19,8 +19,8 @@ export default function CategoriesTab() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h3 className="text-lg font-semibold text-white">Categorías de Grupos</h3>
-          <p className="text-sm text-slate-400 mt-1">
+          <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Categorías de Grupos</h3>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
             Gestiona las categorías disponibles para los grupos pequeños
           </p>
         </div>
@@ -33,7 +33,7 @@ export default function CategoriesTab() {
       {/* Mobile View - Cards */}
       <div className="md:hidden space-y-3">
         {categorias.map((categoria) => (
-          <div key={categoria.id} className="bg-[#2A2929] border border-[#3A3939] rounded-lg p-4 hover:bg-dark transition-colors">
+          <div key={categoria.id} className="bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-lg p-4 hover:bg-slate-50 dark:hover:bg-neutral-800 transition-colors">
             <div className="flex items-start justify-between mb-3">
               <div className="flex items-center gap-3">
                 <div 
@@ -43,14 +43,14 @@ export default function CategoriesTab() {
                   <Tag className="w-5 h-5" style={{ color: categoria.color }} />
                 </div>
                 <div>
-                  <h4 className="text-sm font-medium text-white">{categoria.nombre}</h4>
-                  <p className="text-xs text-slate-400 mt-1">{categoria.descripcion}</p>
+                  <h4 className="text-sm font-medium text-slate-900 dark:text-white">{categoria.nombre}</h4>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{categoria.descripcion}</p>
                 </div>
               </div>
               <Button 
                 variant="ghost" 
                 size="icon"
-                className="text-slate-400 hover:text-white hover:bg-[#3A3939]"
+                className="text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-neutral-800"
               >
                 <MoreHorizontal className="w-5 h-5" />
               </Button>
@@ -58,10 +58,10 @@ export default function CategoriesTab() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div 
-                  className="w-6 h-6 rounded border border-[#3A3939]"
+                  className="w-6 h-6 rounded border border-slate-200 dark:border-neutral-800"
                   style={{ backgroundColor: categoria.color }}
                 />
-                <span className="text-xs text-slate-400">{categoria.color}</span>
+                <span className="text-xs text-slate-500 dark:text-slate-400">{categoria.color}</span>
               </div>
               <span className="px-3 py-1 rounded-full text-xs font-medium bg-green-900/30 text-green-400 border border-green-900/50">
                 Activa
@@ -72,30 +72,30 @@ export default function CategoriesTab() {
       </div>
 
       {/* Desktop View - Table */}
-      <div className="hidden md:block bg-[#2A2929] border border-[#3A3939] rounded-lg overflow-hidden">
+      <div className="hidden md:block bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-lg overflow-hidden">
         <table className="w-full">
-          <thead className="bg-dark border-b border-[#3A3939]">
+          <thead className="bg-slate-50 dark:bg-neutral-950 border-b border-slate-200 dark:border-neutral-800">
             <tr>
-              <th className="px-6 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
+              <th className="px-6 py-4 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                 Categoría
               </th>
-              <th className="px-6 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
+              <th className="px-6 py-4 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                 Descripción
               </th>
-              <th className="px-6 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
+              <th className="px-6 py-4 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                 Color
               </th>
-              <th className="px-6 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
+              <th className="px-6 py-4 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                 Estado
               </th>
-              <th className="px-6 py-4 text-right text-xs font-medium text-slate-400 uppercase tracking-wider">
+              <th className="px-6 py-4 text-right text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                 Acciones
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#3A3939]">
+          <tbody className="divide-y divide-slate-200 dark:divide-neutral-800">
             {categorias.map((categoria) => (
-              <tr key={categoria.id} className="hover:bg-dark transition-colors">
+              <tr key={categoria.id} className="hover:bg-slate-50 dark:hover:bg-neutral-800 transition-colors">
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center gap-3">
                     <div 
@@ -104,21 +104,21 @@ export default function CategoriesTab() {
                     >
                       <Tag className="w-5 h-5" style={{ color: categoria.color }} />
                     </div>
-                    <span className="text-sm font-medium text-white">
+                    <span className="text-sm font-medium text-slate-900 dark:text-white">
                       {categoria.nombre}
                     </span>
                   </div>
                 </td>
-                <td className="px-6 py-4 text-sm text-slate-400">
+                <td className="px-6 py-4 text-sm text-slate-500 dark:text-slate-400">
                   {categoria.descripcion}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center gap-2">
                     <div 
-                      className="w-6 h-6 rounded border border-[#3A3939]"
+                      className="w-6 h-6 rounded border border-slate-200 dark:border-neutral-800"
                       style={{ backgroundColor: categoria.color }}
                     />
-                    <span className="text-sm text-slate-400">{categoria.color}</span>
+                    <span className="text-sm text-slate-500 dark:text-slate-400">{categoria.color}</span>
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
@@ -130,7 +130,7 @@ export default function CategoriesTab() {
                   <Button 
                     variant="ghost" 
                     size="icon"
-                    className="text-slate-400 hover:text-white hover:bg-[#3A3939]"
+                    className="text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-neutral-800"
                   >
                     <MoreHorizontal className="w-5 h-5" />
                   </Button>

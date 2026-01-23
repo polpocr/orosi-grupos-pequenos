@@ -42,15 +42,15 @@ export default function Sidebar({ onClose, isMobile = false }: SidebarProps) {
   const pathname = usePathname();
 
   const containerClass = isMobile
-    ? "flex flex-col h-full bg-[#0F0F0F]" // Móvil (dentro del Sheet)
-    : "hidden md:flex md:flex-col md:w-64 bg-[#0F0F0F] border-r border-[#2A2929] h-screen sticky top-0"; // Desktop
+    ? "flex flex-col h-full bg-slate-100 dark:bg-[#0F0F0F]" // Móvil (dentro del Sheet)
+    : "hidden md:flex md:flex-col md:w-64 bg-slate-100 dark:bg-[#0F0F0F] border-r border-slate-200 dark:border-dark-border-light h-screen sticky top-0"; // Desktop
 
   return (
     <aside className={containerClass}>
       {/* Logo */}
-      <div className="p-6 border-b border-[#2A2929]">
-        <h1 className="text-xl font-bold text-white">Admin Panel</h1>
-        <p className="text-sm text-slate-500 mt-1">Iglesia Oasis</p>
+      <div className="p-6 border-b border-slate-200 dark:border-dark-border">
+        <h1 className="text-xl font-bold text-slate-900 dark:text-white">Admin Panel</h1>
+        <p className="text-sm text-slate-600 dark:text-slate-500 mt-1">Iglesia Oasis</p>
       </div>
 
       {/* Navigation */}
@@ -68,7 +68,7 @@ export default function Sidebar({ onClose, isMobile = false }: SidebarProps) {
                 "flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200",
                 isActive
                   ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20"
-                  : "text-slate-400 hover:bg-[#2A2929] hover:text-white"
+                  : "text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-dark-border hover:text-slate-900 dark:hover:text-white"
               )}
             >
               <Icon className="w-5 h-5" />
@@ -79,8 +79,8 @@ export default function Sidebar({ onClose, isMobile = false }: SidebarProps) {
       </nav>
 
       {/* Footer */}
-      <div className="p-4 border-t border-[#2A2929]">
-        <p className="text-xs text-slate-600 text-center">
+      <div className="p-4 border-t border-slate-200 dark:border-dark-border">
+        <p className="text-xs text-slate-500 dark:text-slate-600 text-center">
           © 2026 Iglesia Oasis
         </p>
       </div>
