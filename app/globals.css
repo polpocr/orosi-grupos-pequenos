@@ -169,6 +169,12 @@ html {
   }
 }
 
+@layer utilities {
+  .bg-dark {
+    background-color: var(--color-dark);
+  }
+}
+
 
 /* ============================================
    Clerk Dark Theme - Minimalista (Solo en Dark Mode)
