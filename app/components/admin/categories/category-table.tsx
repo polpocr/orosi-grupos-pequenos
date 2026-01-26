@@ -21,6 +21,8 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
+import { TableSkeleton } from "@/components/ui/table-skeleton";
+
 export function CategoryTable() {
   const categories = useQuery(api.categories.get);
   const toggleActive = useMutation(api.categories.toggleActive);
@@ -30,7 +32,7 @@ export function CategoryTable() {
   const [categoryToDelete, setCategoryToDelete] = useState<Id<"categories"> | null>(null);
 
   if (categories === undefined) {
-    return <div className="text-slate-500 dark:text-white p-4">Cargando categorías...</div>;
+    return <TableSkeleton />;
   }
 
   const handleDelete = async () => {

@@ -10,6 +10,8 @@
 
 import type * as admin from "../admin.js";
 import type * as categories from "../categories.js";
+import type * as districts from "../districts.js";
+import type * as seasons from "../seasons.js";
 import type * as users from "../users.js";
 
 import type {
@@ -21,6 +23,8 @@ import type {
 declare const fullApi: ApiFromModules<{
   admin: typeof admin;
   categories: typeof categories;
+  districts: typeof districts;
+  seasons: typeof seasons;
   users: typeof users;
 }>;
 
