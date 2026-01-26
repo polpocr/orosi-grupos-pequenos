@@ -57,7 +57,10 @@ export default function Sidebar({ onClose, isMobile = false }: SidebarProps) {
       <nav className="flex-1 p-4 space-y-1">
         {menuItems.map((item) => {
           const Icon = item.icon;
-          const isActive = pathname === item.href;
+          const isActive = 
+            item.href === "/admin" 
+              ? pathname === "/admin" 
+              : pathname.startsWith(item.href);
 
           return (
             <Link

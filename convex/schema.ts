@@ -48,8 +48,9 @@ export default defineSchema({
     
     leaders: v.array(v.string()),
 
-    targetAudience: v.optional(v.string()), 
-    icon: v.optional(v.string()), 
+    targetAudience: v.optional(v.string()),
+    minAge: v.number(),
+    maxAge: v.number(),
     legacyId: v.optional(v.string()), 
     updatedAt: v.optional(v.number())
   })
@@ -57,7 +58,7 @@ export default defineSchema({
   .index("by_category", ["categoryId"])
   .index("by_district", ["districtId"]),
 
-  registrations: defineTable({
+  members: defineTable({
     groupId: v.id("groups"), 
     userId: v.optional(v.string()),
     fullName: v.string(),
