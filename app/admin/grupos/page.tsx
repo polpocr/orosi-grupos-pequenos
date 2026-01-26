@@ -48,17 +48,33 @@ export default function GruposPage() {
     return dependencies?.districts.find((d) => d._id === id)?.name || "---";
   };
 
+  /* Helper para renderizar el badge de categoría con colores dinámicos */
+  const getCategoryBadge = (categoryId: Id<"categories">) => {
+    const category = dependencies?.categories.find((c) => c._id === categoryId);
+    if (!category) return <span className="text-muted-foreground text-sm">---</span>;
+    
+    const colorClass = category.color || "bg-slate-500";
+    
+    return (
+      <span 
+        className={`px-3 py-1 rounded-full text-xs font-normal text-white shadow-sm transition-colors ${colorClass}`}
+      >
+        {category.name}
+      </span>
+    );
+  };
+
   const getEstadoBadge = (seasonId: Id<"seasons">) => {
     const season = dependencies?.seasons.find(s => s._id === seasonId);
     if (season?.isActive) {
          return (
-            <span className="px-3 py-1 rounded-full text-xs font-medium bg-green-900/30 text-green-400 border border-green-900/50">
+            <span className="px-3 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-900/50">
                 Activo
             </span>
         );
     }
     return (
-      <span className="px-3 py-1 rounded-full text-xs font-medium bg-slate-700/30 text-slate-400 border border-slate-700/50">
+      <span className="px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600 dark:bg-slate-800/50 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
         Inactivo
       </span>
     );
@@ -73,7 +89,7 @@ export default function GruposPage() {
     );
   }
 
-  // Filter Logic
+  // Lógica de filtrado
   const filteredGroups = groups.filter(g => {
     const matchesSearch = g.name.toLowerCase().includes(search.toLowerCase()) || 
                           g.leaders.some(l => l.toLowerCase().includes(search.toLowerCase()));
@@ -88,27 +104,25 @@ export default function GruposPage() {
         title="Grupos"
         subtitle="Gestiona los grupos pequeños de la iglesia"
         actionButton={
-          <Link href="/admin/grupos/new">
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white w-full">
-                <Plus className="w-4 h-4 mr-2" />
-                Nuevo Grupo
-            </Button>
-          </Link>
-        }
-      />
-
-      <DataTableWrapper 
-        toolbar={
             <GroupsToolbar 
                 onSearch={setSearch} 
                 onDistritoChange={setDistrictFilter} 
                 onCategoriaChange={setCategoryFilter}
                 districts={dependencies.districts}
                 categories={dependencies.categories}
-            />
+            >
+                <Link href="/admin/grupos/new">
+                    <Button className="bg-blue-600 hover:bg-blue-700 text-white w-full md:w-auto">
+                        <Plus className="w-4 h-4 mr-2" />
+                        Nuevo Grupo
+                    </Button>
+                </Link>
+            </GroupsToolbar>
         }
-      >
-        {/* Mobile View - Cards */}
+      />
+
+      <DataTableWrapper>
+        {/* Vista Móvil - Tarjetas */}
         <div className="md:hidden divide-y divide-slate-200 dark:divide-neutral-800">
           {filteredGroups.map((grupo) => (
             <div key={grupo._id} className="p-4 hover:bg-slate-50 dark:hover:bg-neutral-800 transition-colors">
@@ -134,13 +148,18 @@ export default function GruposPage() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                          <Link href={`/admin/grupos/${grupo._id}/edit`}>
-                             <DropdownMenuItem>
+                             <DropdownMenuItem className="cursor-pointer">
                                 <Pencil className="mr-2 h-4 w-4" /> Editar
+                             </DropdownMenuItem>
+                         </Link>
+                         <Link href={`/admin/grupos/${grupo._id}/members`}>
+                             <DropdownMenuItem className="cursor-pointer">
+                                <Users className="mr-2 h-4 w-4" /> Ver Participantes
                              </DropdownMenuItem>
                          </Link>
                          <DropdownMenuSeparator />
                          <DropdownMenuItem 
-                            className="text-red-500 hover:text-red-600 hover:bg-red-100/10"
+                            className="text-red-500 hover:text-red-600 hover:bg-red-100/10 cursor-pointer"
                             onClick={() => handleDelete(grupo._id, grupo.name)}
                          >
                             <Trash className="mr-2 h-4 w-4" /> Eliminar
@@ -149,9 +168,7 @@ export default function GruposPage() {
                 </DropdownMenu>
               </div>
               <div className="flex flex-wrap items-center gap-2 mb-2">
-                <span className="px-3 py-1 rounded-full text-xs font-medium bg-purple-900/30 text-purple-400 border border-purple-900/50">
-                  {getCategoryName(grupo.categoryId)}
-                </span>
+                {getCategoryBadge(grupo.categoryId)}
                 {getEstadoBadge(grupo.seasonId)}
               </div>
               <div className="flex items-center justify-between text-sm">
@@ -167,7 +184,7 @@ export default function GruposPage() {
           )}
         </div>
 
-        {/* Desktop View - Table */}
+        {/* Vista Escritorio - Tabla */}
         <div className="hidden md:block overflow-x-auto">
           <table className="w-full">
             <thead className="bg-slate-50 dark:bg-neutral-950 border-b border-slate-200 dark:border-neutral-800">
@@ -176,7 +193,7 @@ export default function GruposPage() {
                   Nombre
                 </th>
                 <th className="px-6 py-4 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                  Facilitador
+                  Facilitador(es)
                 </th>
                 <th className="px-6 py-4 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                   Distrito
@@ -215,9 +232,7 @@ export default function GruposPage() {
                     {getDistrictName(grupo.districtId)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="px-3 py-1 rounded-full text-xs font-medium bg-purple-900/30 text-purple-400 border border-purple-900/50">
-                      {getCategoryName(grupo.categoryId)}
-                    </span>
+                    {getCategoryBadge(grupo.categoryId)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900 dark:text-white font-medium">
                     {grupo.currentMembersCount} <span className="text-muted-foreground text-xs">/ {grupo.capacity}</span>
@@ -238,13 +253,18 @@ export default function GruposPage() {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                             <Link href={`/admin/grupos/${grupo._id}/edit`}>
-                                <DropdownMenuItem>
+                                <DropdownMenuItem className="cursor-pointer">
                                     <Pencil className="mr-2 h-4 w-4" /> Editar
+                                </DropdownMenuItem>
+                            </Link>
+                            <Link href={`/admin/grupos/${grupo._id}/members`}>
+                                <DropdownMenuItem className="cursor-pointer">
+                                    <Users className="mr-2 h-4 w-4" /> Ver Participantes
                                 </DropdownMenuItem>
                             </Link>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem 
-                                className="text-red-500 hover:text-red-600 hover:bg-red-100/10"
+                                className="text-red-500 hover:text-red-600 hover:bg-red-100/10 cursor-pointer"
                                 onClick={() => handleDelete(grupo._id, grupo.name)}
                             >
                                 <Trash className="mr-2 h-4 w-4" /> Eliminar

@@ -3,7 +3,7 @@
 import { UserButton } from "@clerk/nextjs";
 import { Menu } from "lucide-react";
 import { useState } from "react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import Sidebar from "./Sidebar";
 import ThemeToggle from "./ThemeToggle";
@@ -32,6 +32,9 @@ export default function HeaderAdmin({ title = "Dashboard" }: HeaderAdminProps) {
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="p-0 w-64 bg-slate-100 dark:bg-dark-sidebar border-slate-200 dark:border-dark-border">
+              <div className="sr-only">
+                <SheetTitle>Menú de Navegación</SheetTitle>
+              </div>
               <Sidebar onClose={() => setOpen(false)} isMobile={true} />
             </SheetContent>
           </Sheet>
