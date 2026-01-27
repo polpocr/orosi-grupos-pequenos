@@ -96,3 +96,78 @@ export const MessageIcon = ({ className }: { className?: string }) => (
     <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
   </svg>
 );
+
+import {
+  BookOpen as LucideBookOpen,
+  Heart as LucideHeart,
+  Lightbulb as LucideLightbulb,
+  HandHelping as LucideHandHelping,
+  Users as LucideUsers,
+  Music as LucideMusic,
+  Star as LucideStar,
+  Zap as LucideZap,
+  Briefcase as LucideBriefcase,
+  Smile as LucideSmile,
+  Handshake as LucideHandshake
+} from "lucide-react";
+
+export const BookOpenIcon = ({ className }: { className?: string }) => <LucideBookOpen className={className} />;
+
+export const HeartIcon = ({ className }: { className?: string }) => <LucideHeart className={className} />;
+
+export const LightbulbIcon = ({ className }: { className?: string }) => <LucideLightbulb className={className} />;
+
+export const HandHelpingIcon = ({ className }: { className?: string }) => <LucideHandHelping className={className} />;
+
+export const UsersIcon = ({ className }: { className?: string }) => <LucideUsers className={className} />;
+
+export const MusicIcon = ({ className }: { className?: string }) => <LucideMusic className={className} />;
+
+export const StarIcon = ({ className }: { className?: string }) => <LucideStar className={className} />;
+
+export const ZapIcon = ({ className }: { className?: string }) => <LucideZap className={className} />;
+
+export const BriefcaseIcon = ({ className }: { className?: string }) => <LucideBriefcase className={className} />;
+
+export const SmileIcon = ({ className }: { className?: string }) => <LucideSmile className={className} />;
+
+export const HandshakeIcon = ({ className }: { className?: string }) => <LucideHandshake className={className} />;
+
+export const CategoryIcon = ({ iconName, className }: { iconName?: string; className?: string }) => {
+  const iconProps = { className: className || "w-4 h-4 text-white" };
+  switch (iconName) {
+    case "BookOpen": return <LucideBookOpen {...iconProps} />;
+    case "Lightbulb": return <LucideLightbulb {...iconProps} />;
+    case "Handshake": return <LucideHandshake {...iconProps} />;
+    case "Users": return <LucideUsers {...iconProps} />;
+    case "Heart": return <LucideHeart {...iconProps} />;
+    case "Music": return <LucideMusic {...iconProps} />;
+    case "Star": return <LucideStar {...iconProps} />;
+    case "Zap": return <LucideZap {...iconProps} />;
+    case "Briefcase": return <LucideBriefcase {...iconProps} />;
+    case "Smile": return <LucideSmile {...iconProps} />;
+    case "HandHelping": return <LucideHandHelping {...iconProps} />;
+    // Fallback
+    case "book": return <LucideBookOpen {...iconProps} />;
+    case "bulb": return <LucideLightbulb {...iconProps} />;
+    case "hand": return <LucideHandHelping {...iconProps} />;
+    default: return <LucideBookOpen {...iconProps} />;
+  }
+};
+
+export const SearchIcon = ({ className }: { className?: string }) => (
+  <svg
+    className={className}
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+    />
+  </svg>
+);
+

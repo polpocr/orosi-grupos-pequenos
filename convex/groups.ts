@@ -27,7 +27,20 @@ export const get = query({
 export const list = query({
   args: {},
   handler: async (ctx) => {
-    return await ctx.db.query("groups").collect();
+    const groups = await ctx.db.query("groups").collect();
+    
+    // Enriquecer con info del distrito
+    const groupsWithDistricts = await Promise.all(
+        groups.map(async group => {
+            const district = await ctx.db.get(group.districtId);
+            return {
+                ...group,
+                district
+            };
+        })
+    );
+
+    return groupsWithDistricts;
   },
 });
 
