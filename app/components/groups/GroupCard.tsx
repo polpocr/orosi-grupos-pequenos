@@ -12,7 +12,7 @@ interface GroupWithDistrict extends Doc<"groups"> {
 interface GroupCardProps {
   group: GroupWithDistrict;
   category?: Doc<"categories">;
-  onViewDetails?: (groupId: Id<"groups">) => void;
+  onViewDetails?: (group: GroupWithDistrict) => void;
 }
 
 const getCategoryIcon = (iconName: string = "") => {
@@ -107,7 +107,7 @@ export default function GroupCard({ group, category, onViewDetails }: GroupCardP
             ? "bg-slate-200 text-slate-400 hover:bg-slate-200 cursor-not-allowed"
             : "bg-blue-primary text-white hover:bg-slate-800 transition-all"
             }`}
-          onClick={() => onViewDetails && onViewDetails(group._id)}
+          onClick={() => onViewDetails && onViewDetails(group)}
           disabled={isFull}
         >
           Ver más

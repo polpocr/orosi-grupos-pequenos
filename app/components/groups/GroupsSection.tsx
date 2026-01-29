@@ -5,6 +5,7 @@ import { api } from "@/convex/_generated/api";
 import GroupCard from "./GroupCard";
 import FilterButton from "../ui/FilterButton";
 import { FilterSidebar } from "./filters/FilterSidebar";
+import GroupDetailModal from "@/app/components/public/GroupDetailModal";
 import { useState, useEffect, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { sortDays, filterGroups, getGroupTime } from "@/app/helpers/filters";
@@ -22,6 +23,7 @@ const GroupsSection = () => {
 
     // Estado local sincronizado con la URL (Persistencia Completa)
     const [searchTerm, setSearchTerm] = useState(searchParams.get("q") || "");
+    const [selectedGroup, setSelectedGroup] = useState<any | null>(null);
     const [showFilters, setShowFilters] = useState(searchParams.get("showFilters") === "true");
 
     const [selectedFilters, setSelectedFilters] = useState({
@@ -248,6 +250,7 @@ const GroupsSection = () => {
                                             key={group._id}
                                             group={group}
                                             category={dependencies?.categories.find(c => c._id === group.categoryId)}
+                                            onViewDetails={setSelectedGroup}
                                         />
                                     ))}
                                 </div>
@@ -256,6 +259,12 @@ const GroupsSection = () => {
                     </div>
                 </div>
             </div>
+            <GroupDetailModal
+                group={selectedGroup}
+                isOpen={!!selectedGroup}
+                onClose={() => setSelectedGroup(null)}
+                category={dependencies?.categories.find((c: any) => c._id === selectedGroup?.categoryId)}
+            />
         </section>
     );
 };
