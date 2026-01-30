@@ -17,9 +17,9 @@ export default function NewGroupPage() {
       <div className="p-8 space-y-8">
         <Skeleton className="h-10 w-1/3" />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <Skeleton className="h-[400px]" />
-            <Skeleton className="h-[400px]" />
-            <Skeleton className="h-[400px]" />
+          <Skeleton className="h-[400px]" />
+          <Skeleton className="h-[400px]" />
+          <Skeleton className="h-[400px]" />
         </div>
       </div>
     );
@@ -29,15 +29,15 @@ export default function NewGroupPage() {
     <div className="container mx-auto py-8">
       <div className="mb-6">
         <Link href="/admin/grupos">
-            <Button variant="ghost" className="gap-2 pl-0 hover:bg-transparent hover:text-primary">
-                <ArrowLeft className="h-4 w-4" />
-                Volver a Grupos
-            </Button>
+          <Button variant="ghost" className="gap-2 pl-0 hover:bg-transparent hover:text-primary">
+            <ArrowLeft className="h-4 w-4" />
+            Volver a Grupos
+          </Button>
         </Link>
       </div>
       <Card className="border-none shadow-none bg-transparent">
         <CardHeader className="px-0">
-          <CardTitle className="text-3xl font-bold">Crear Nuevo Grupo</CardTitle>
+          <CardTitle className="text-3xl font-bold text-center">Crear Nuevo Grupo</CardTitle>
         </CardHeader>
         <CardContent>
           <GroupForm

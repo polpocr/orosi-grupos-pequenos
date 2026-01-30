@@ -1,10 +1,10 @@
-"use client";
-
-import { useEffect, useRef, MouseEvent } from "react";
+import { useEffect, useRef, MouseEvent, useState } from "react";
 import { Doc } from "@/convex/_generated/dataModel";
 import { X, MapPin, UserPlus, User } from "lucide-react";
 import { CategoryIcon } from "@/app/components/ui/Icons";
 import { Button } from "@/components/ui/button";
+import GroupRegistrationModal from "./GroupRegistrationModal";
+import GroupSuccessModal from "./GroupSuccessModal";
 
 interface GroupWithDistrict extends Doc<"groups"> {
     district?: { name: string } | null;
@@ -17,28 +17,43 @@ interface GroupDetailModalProps {
     category?: Doc<"categories">;
 }
 
+type ModalView = 'detail' | 'register' | 'success';
+
 export default function GroupDetailModal({ group, isOpen, onClose, category }: GroupDetailModalProps) {
     const modalRef = useRef<HTMLDivElement>(null);
+    const [view, setView] = useState<ModalView>('detail');
 
-    // Cerrar con la tecla Escape
+    // Reset view when modal is opened/closed or group changes
+    useEffect(() => {
+        if (isOpen) {
+            setView('detail');
+        }
+    }, [isOpen, group]);
+
+    // Cerrar con la tecla Escape (solo si estamos en la vista de detalle)
+    // Las otras vistas (Dialogs) manejan su propio Escape
     useEffect(() => {
         const handleEscape = (e: KeyboardEvent) => {
-            if (e.key === "Escape") onClose();
+            if (e.key === "Escape" && view === 'detail') onClose();
         };
 
         if (isOpen) {
             document.addEventListener("keydown", handleEscape);
-            document.body.style.overflow = "hidden"; // Evitar scroll del body
+            // Solo bloqueamos scroll si estamos en detalle, ya que Dialog lo hace por su cuenta
+            if (view === 'detail') {
+                document.body.style.overflow = "hidden";
+            }
         }
 
         return () => {
             document.removeEventListener("keydown", handleEscape);
             document.body.style.overflow = "unset";
         };
-    }, [isOpen, onClose]);
+    }, [isOpen, onClose, view]);
 
-    // Cerrar al hacer click fuera del modal
+    // Cerrar al hacer click fuera del modal (solo vista detalle)
     const handleBackdropClick = (e: MouseEvent) => {
+        if (view !== 'detail') return;
         if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
             onClose();
         }
@@ -46,18 +61,36 @@ export default function GroupDetailModal({ group, isOpen, onClose, category }: G
 
     const formatLeaders = (leaders: string[] | undefined) => {
         if (!leaders || leaders.length === 0) return "Equipo de Staff";
-
-        // Filtrar nombres vacíos
         const names = leaders.filter(n => n.trim().length > 0);
-
         if (names.length === 0) return "Equipo de Staff";
         if (names.length === 1) return names[0];
         if (names.length === 2) return `${names[0]} y ${names[1]}`;
-        // Para 3 o más: "A, B y C"
         return `${names.slice(0, -1).join(', ')} y ${names[names.length - 1]}`;
     };
 
     if (!isOpen || !group) return null;
+
+    // Render Registration Modal
+    if (view === 'register') {
+        return (
+            <GroupRegistrationModal
+                groupId={group._id}
+                isOpen={true}
+                onClose={() => setView('detail')} // Volver a detalle al cancelar
+                onSuccess={() => setView('success')}
+            />
+        );
+    }
+
+    // Render Success Modal
+    if (view === 'success') {
+        return (
+            <GroupSuccessModal
+                isOpen={true}
+                onClose={() => onClose()} // Cerrar todo al terminar
+            />
+        );
+    }
 
     const categoryColor = category?.color || "bg-blue-500";
     const categoryIconName = category?.icon || "BookOpen";
@@ -172,9 +205,8 @@ export default function GroupDetailModal({ group, isOpen, onClose, category }: G
                             {/* Botón Ubicación */}
                             {(group.district || group.address) && (
                                 <Button
-                                    className="flex-1 md:flex-none rounded-full border border-slate-900 text-white bg-black hover:bg-gray-900 font-light gap-2 h-10 px-6 text-base"
+                                    className="flex-1 md:flex-none rounded-full border border-slate-900 text-white bg-black hover:bg-gray-900 font-light gap-2 h-10 px-6 text-base cursor-pointer"
                                     onClick={() => {
-                                        // Lógica de Google Maps
                                         window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${group.district?.name || ""} ${group.address || ""}`)}`, '_blank');
                                     }}
                                 >
@@ -185,11 +217,8 @@ export default function GroupDetailModal({ group, isOpen, onClose, category }: G
 
                             {/* Botón Unirme */}
                             <Button
-                                className="flex-1 md:flex-none rounded-full bg-blue-primary text-white hover:bg-slate-800 font-light gap-2 shadow-lg shadow-slate-900/20 h-10 px-8 text-base"
-                                onClick={() => {
-                                    // Lógica de contacto directa (WhatsApp)
-                                    window.open(`https://wa.me/?text=Hola, quiero unirme al grupo: ${group.name}`, '_blank');
-                                }}
+                                className="flex-1 md:flex-none rounded-full bg-blue-primary text-white hover:bg-slate-800 font-light gap-2 shadow-lg shadow-slate-900/20 h-10 px-8 text-base cursor-pointer"
+                                onClick={() => setView('register')}
                             >
                                 <UserPlus className="w-4 h-4" />
                                 Unirme

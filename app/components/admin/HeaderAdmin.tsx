@@ -16,16 +16,16 @@ export default function HeaderAdmin({ title = "Dashboard" }: HeaderAdminProps) {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="bg-white dark:bg-dark border-b border-slate-200 dark:border-dark px-6 py-4 sticky top-0 z-10">
+    <header className="bg-white dark:bg-dark border-b border-slate-200 dark:border-dark px-6 py-4 fixed top-0 right-0 left-0 md:left-64 z-10">
       <div className="flex items-center justify-between">
         {/* Left side - Mobile menu + Title */}
         <div className="flex items-center gap-4">
           {/* Mobile menu button */}
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
-              <Button 
-                variant="ghost" 
-                size="icon" 
+              <Button
+                variant="ghost"
+                size="icon"
                 className="md:hidden text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-dark-border"
               >
                 <Menu className="h-6 w-6" />

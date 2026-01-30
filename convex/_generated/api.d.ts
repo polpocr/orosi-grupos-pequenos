@@ -11,8 +11,10 @@
 import type * as admin from "../admin.js";
 import type * as categories from "../categories.js";
 import type * as districts from "../districts.js";
+import type * as emails from "../emails.js";
 import type * as groups from "../groups.js";
 import type * as members from "../members.js";
+import type * as public_ from "../public.js";
 import type * as seasons from "../seasons.js";
 import type * as users from "../users.js";
 
@@ -26,8 +28,10 @@ declare const fullApi: ApiFromModules<{
   admin: typeof admin;
   categories: typeof categories;
   districts: typeof districts;
+  emails: typeof emails;
   groups: typeof groups;
   members: typeof members;
+  public: typeof public_;
   seasons: typeof seasons;
   users: typeof users;
 }>;

@@ -10,6 +10,8 @@ import { useState, useEffect, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { sortDays, filterGroups, getGroupTime } from "@/app/helpers/filters";
 import { CategoryIcon, SearchIcon } from "@/app/components/ui/Icons";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 const GroupsSection = () => {
     const router = useRouter();
@@ -25,6 +27,20 @@ const GroupsSection = () => {
     const [searchTerm, setSearchTerm] = useState(searchParams.get("q") || "");
     const [selectedGroup, setSelectedGroup] = useState<any | null>(null);
     const [showFilters, setShowFilters] = useState(searchParams.get("showFilters") === "true");
+    const [showMobileFilters, setShowMobileFilters] = useState(false);
+    const [tempMobileFilters, setTempMobileFilters] = useState({
+        category: searchParams.get("category") || "all",
+        modality: searchParams.get("modality") || "",
+        location: searchParams.get("location") || "",
+        day: searchParams.get("day") || "",
+        schedule: searchParams.get("schedule") || "",
+        ageRange: [
+            Number(searchParams.get("minAge")) || 18,
+            Number(searchParams.get("maxAge")) || 99
+        ] as [number, number],
+        target: searchParams.get("target") || "",
+        mode: searchParams.get("mode") || ""
+    });
 
     const [selectedFilters, setSelectedFilters] = useState({
         category: searchParams.get("category") || "all",
@@ -125,11 +141,12 @@ const GroupsSection = () => {
                 </div>
                 <div className="w-fit mx-auto flex flex-col">
                     <div className={`relative flex flex-col md:flex-row items-center justify-center mb-12 min-h-[44px] ${!showFilters ? 'gap-20' : ''}`}>
-                        {/* 1. Botón Filtro */}
+                        {/* 1. Botón Filtro - Desktop muestra sidebar, Móvil abre modal */}
                         <div className={`w-full md:w-auto flex justify-start ${showFilters ? 'md:absolute md:left-0 md:top-0 md:z-10' : ''}`}>
+                            {/* Botón para Desktop (lg+) */}
                             <button
                                 onClick={() => setShowFilters(!showFilters)}
-                                className={`px-6 py-2 border border-white/30 rounded-full text-sm font-medium transition-colors flex items-center gap-2 hover:cursor-pointer bg-black ${showFilters
+                                className={`hidden lg:flex px-6 py-2 border border-white/30 rounded-full text-sm font-medium transition-colors items-center gap-2 hover:cursor-pointer bg-black ${showFilters
                                     ? 'text-blue-secondary bg-white border-white'
                                     : 'text-white hover:bg-white/20'
                                     }`}
@@ -150,6 +167,20 @@ const GroupsSection = () => {
                                         </svg>
                                     </>
                                 )}
+                            </button>
+
+                            {/* Botón para Móvil (< lg) - Abre Modal */}
+                            <button
+                                onClick={() => {
+                                    setTempMobileFilters(selectedFilters);
+                                    setShowMobileFilters(true);
+                                }}
+                                className="lg:hidden flex px-6 py-2 border border-white/30 rounded-full text-sm font-medium transition-colors items-center gap-2 hover:cursor-pointer bg-black text-white hover:bg-white/20"
+                            >
+                                <span>Filtro</span>
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                                </svg>
                             </button>
                         </div>
 
@@ -190,19 +221,17 @@ const GroupsSection = () => {
                         </div>
                     </div>
 
-                    {/* Filtros de la barra lateral */}
+                    {/* Filtros de la barra lateral - Solo Desktop */}
                     <div className={`grid gap-8 ${showFilters ? 'grid-cols-1 lg:grid-cols-4' : 'grid-cols-1'}`}>
-                        {/* Barra lateral izquierda - Filtros */}
+                        {/* Barra lateral izquierda - Filtros Desktop */}
                         {showFilters && (
-                            <div className="lg:col-span-1">
+                            <div className="hidden lg:block lg:col-span-1">
                                 <FilterSidebar
                                     filters={selectedFilters}
                                     setFilters={setSelectedFilters}
                                     dependencies={dependencies}
                                     options={derivedOptions}
-                                    onApply={() => {
-                                        // Opcional: Cerrar filtros en móvil o scroll top
-                                    }}
+                                    isMobile={false}
                                 />
                             </div>
                         )}
@@ -265,6 +294,28 @@ const GroupsSection = () => {
                 onClose={() => setSelectedGroup(null)}
                 category={dependencies?.categories.find((c: any) => c._id === selectedGroup?.categoryId)}
             />
+
+            {/* Modal de Filtros para Móvil */}
+            <Dialog open={showMobileFilters} onOpenChange={setShowMobileFilters}>
+                <DialogContent className="h-screen max-h-screen w-screen max-w-none m-0 p-0 rounded-none bg-blue-secondary text-white border-none">
+                    <DialogHeader className="p-6 pb-4 border-b border-white/20">
+                        <DialogTitle className="text-2xl font-outfit text-white">Filtros</DialogTitle>
+                    </DialogHeader>
+                    <div className="flex-1 overflow-y-auto p-6">
+                        <FilterSidebar
+                            filters={tempMobileFilters}
+                            setFilters={setTempMobileFilters}
+                            dependencies={dependencies}
+                            options={derivedOptions}
+                            isMobile={true}
+                            onApply={() => {
+                                setSelectedFilters(tempMobileFilters);
+                                setShowMobileFilters(false);
+                            }}
+                        />
+                    </div>
+                </DialogContent>
+            </Dialog>
         </section>
     );
 };

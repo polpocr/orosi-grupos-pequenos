@@ -28,19 +28,28 @@
   box-sizing: border-box;
 }
 
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
+html {
+  width: 100%;
+  overflow-x: clip;
+  scroll-behavior: smooth;
+  scrollbar-gutter: stable; /* Reserve space for scrollbar without forcing it */
 }
 
 body {
+  width: 100%;
+  overflow-x: clip;
   font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
 }
 
-/* Smooth scrolling */
-html {
-  scroll-behavior: smooth;
+/*
+  Fix Layout Shift + Sticky Header:
+  When Radix UI opens dropdowns, it blocks body overflow which breaks sticky positioning.
+  Force overflow to remain visible so sticky header stays in place.
+*/
+body[data-scroll-locked] {
+  overflow: visible !important;
+  padding-right: 0 !important;
+  margin-right: 0 !important;
 }
 
 /* Focus styles for accessibility */

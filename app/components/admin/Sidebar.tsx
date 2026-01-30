@@ -43,7 +43,7 @@ export default function Sidebar({ onClose, isMobile = false }: SidebarProps) {
 
   const containerClass = isMobile
     ? "flex flex-col h-full bg-slate-100 dark:bg-[#0F0F0F]" // Móvil (dentro del Sheet)
-    : "hidden md:flex md:flex-col md:w-64 bg-slate-100 dark:bg-[#0F0F0F] border-r border-slate-200 dark:border-dark-border-light h-screen sticky top-0"; // Desktop
+    : "hidden md:flex md:flex-col md:w-64 bg-slate-100 dark:bg-[#0F0F0F] border-r border-slate-200 dark:border-dark-border-light h-screen fixed left-0 top-0 z-30"; // Desktop
 
   return (
     <aside className={containerClass}>
@@ -57,9 +57,9 @@ export default function Sidebar({ onClose, isMobile = false }: SidebarProps) {
       <nav className="flex-1 p-4 space-y-1">
         {menuItems.map((item) => {
           const Icon = item.icon;
-          const isActive = 
-            item.href === "/admin" 
-              ? pathname === "/admin" 
+          const isActive =
+            item.href === "/admin"
+              ? pathname === "/admin"
               : pathname.startsWith(item.href);
 
           return (

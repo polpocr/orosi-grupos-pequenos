@@ -27,6 +27,8 @@ export const metadata: Metadata = {
   },
 };
 
+import { Toaster } from "@/components/ui/sonner";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -39,6 +41,7 @@ export default function RootLayout({
       >
         <ConvexClientProvider>
           {children}
+          <Toaster richColors position="top-center" />
         </ConvexClientProvider>
       </body>
     </html>

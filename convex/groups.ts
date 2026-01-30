@@ -5,7 +5,11 @@ import { ConvexError } from "convex/values";
 export const getFormDependencies = query({
   args: {},
   handler: async (ctx) => {
-    const categories = await ctx.db.query("categories").collect();
+    // Solo categorías activas
+    const categories = await ctx.db
+      .query("categories")
+      .filter((q) => q.eq(q.field("isActive"), true))
+      .collect();
     const districts = await ctx.db.query("districts").collect();
     const seasons = await ctx.db.query("seasons").collect();
 
@@ -27,11 +31,24 @@ export const get = query({
 export const list = query({
   args: {},
   handler: async (ctx) => {
+    // Obtener primero las categorías activas
+    const activeCategories = await ctx.db
+      .query("categories")
+      .filter((q) => q.eq(q.field("isActive"), true))
+      .collect();
+    
+    const activeCategoryIds = new Set(activeCategories.map(c => c._id));
+    
     const groups = await ctx.db.query("groups").collect();
+    
+    // Filtrar solo grupos con categorías activas
+    const groupsWithActiveCategories = groups.filter(
+      group => activeCategoryIds.has(group.categoryId)
+    );
     
     // Enriquecer con info del distrito
     const groupsWithDistricts = await Promise.all(
-        groups.map(async group => {
+        groupsWithActiveCategories.map(async group => {
             const district = await ctx.db.get(group.districtId);
             return {
                 ...group,
@@ -68,6 +85,15 @@ export const create = mutation({
       throw new ConvexError("La edad mínima no puede ser mayor a la máxima");
     }
 
+    const existingGroup = await ctx.db
+      .query("groups")
+      .filter((q) => q.eq(q.field("name"), args.name))
+      .first();
+
+    if (existingGroup) {
+      throw new ConvexError("Ya existe un grupo con este nombre");
+    }
+
     const groupId = await ctx.db.insert("groups", {
       ...args,
       currentMembersCount: 0,
@@ -102,6 +128,15 @@ export const update = mutation({
 
     if (updates.minAge > updates.maxAge) {
       throw new ConvexError("La edad mínima no puede ser mayor a la máxima");
+    }
+
+    const existingGroup = await ctx.db
+      .query("groups")
+      .filter((q) => q.eq(q.field("name"), updates.name))
+      .first();
+
+    if (existingGroup && existingGroup._id !== id) {
+      throw new ConvexError("Ya existe un grupo con este nombre");
     }
 
     await ctx.db.patch(id, {
