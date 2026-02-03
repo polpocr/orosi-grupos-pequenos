@@ -4,14 +4,16 @@ import GroupDetailModal from "@/app/components/public/GroupDetailModal";
 import { SearchIcon } from "@/app/components/ui/Icons";
 import { usePublicGroups } from "@/app/hooks/usePublicGroups";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { SlidersHorizontal } from "lucide-react";
 import { api } from "@/convex/_generated/api";
 import { useQuery } from "convex/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { FilterSidebar } from "./filters/FilterSidebar";
 import { GroupsCategoryToolbar } from "./GroupsCategoryToolbar";
 import { GroupsGridList } from "./GroupsGridList";
 import { Doc } from "@/convex/_generated/dataModel";
+import { useGroupsFilterAdapter } from "@/app/hooks/useGroupsFilterAdapter";
 
 const GroupsSection = () => {
     const router = useRouter();
@@ -37,9 +39,18 @@ const GroupsSection = () => {
     });
 
     // Estado local para UI
+    // Estado local para UI
     const [selectedGroup, setSelectedGroup] = useState<Doc<"groups"> | null>(null);
     const [showFilters, setShowFilters] = useState(searchParams.get("showFilters") === "true");
     const [showMobileFilters, setShowMobileFilters] = useState(false);
+    const groupsTopRef = useRef<HTMLDivElement>(null);
+
+    // Scroll al inicio de la lista al cambiar de página
+    useEffect(() => {
+        if (groupsTopRef.current) {
+            groupsTopRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+    }, [page]);
 
     // Sincronizar filtros a URL (Unidireccional para mantener bookmarks)
     useEffect(() => {
@@ -63,26 +74,12 @@ const GroupsSection = () => {
         }
     }, [filters, showFilters, router, searchParams]);
 
-    // Adaptador para FilterSidebar (espera objeto complejo)
-    // Solo soportamos categoría y distrito vía backend
-    const sidebarFilters = useMemo(() => ({
-        category: filters.category,
-        location: filters.district,
-        // Placeholders para filtros no soportados en esta versión
-        modality: "",
-        day: "",
-        schedule: "",
-        ageRange: [18, 99] as [number, number],
-        target: "",
-        mode: ""
-    }), [filters]);
+    // Adaptador de filtros (Helper extraído para eliminar 'any' y limpiar código)
+    const { sidebarFilters, handleSidebarChange } = useGroupsFilterAdapter({
+        filters,
+        setFilter: (key, value) => setFilter(key, value)
+    });
 
-    const handleSidebarChange = (newFilters: any) => {
-        // Mapear cambios del sidebar al hook
-        if (newFilters.category !== filters.category) setFilter("category", newFilters.category);
-        if (newFilters.location !== filters.district) setFilter("district", newFilters.location);
-        // Otros filtros ignorados según requerimiento de Backend Filtering
-    };
 
     // Calcular opciones visuales para Sidebar
     const derivedOptions = useMemo(() => {
@@ -93,8 +90,8 @@ const GroupsSection = () => {
         <section className="bg-blue-secondary text-white font-outfit">
             <div className="max-w-[1920px] mx-auto px-6 py-16 md:px-16 lg:px-32 font-light">
                 {/* Header */}
-                <div className="text-center mb-12">
-                    <h1 className="text-xl mb-6 md:text-4xl md:mb-10">Grupos Conexión</h1>
+                <div className="text-center mb-8 md:mb-12">
+                    <h1 className="text-xl mb-6 md:text-6xl md:mb-10">Grupos Conexión</h1>
                     <h2 className="text-xl mb-1 md:text-4xl md:mb-2">
                         Temporada de Grupos
                     </h2>
@@ -103,9 +100,9 @@ const GroupsSection = () => {
                     </p>
                 </div>
 
-                {/* Barra de Búsqueda */}
-                <div className="max-w-2xl mx-auto mb-8 sm:mb-12 px-3 sm:px-0">
-                    <div className="w-full h-10 sm:h-12 bg-black rounded-full flex items-center px-4 sm:px-6 shadow-lg relative z-10">
+                {/* Barra de Búsqueda Desktop */}
+                <div className="hidden md:block max-w-2xl mx-auto mb-12">
+                    <div className="w-full h-12 bg-black rounded-full flex items-center px-6 shadow-lg relative z-10">
                         <div className="shrink-0 pointer-events-none">
                             <SearchIcon className="h-5 w-5 text-white" />
                         </div>
@@ -114,12 +111,38 @@ const GroupsSection = () => {
                             placeholder="Busco..."
                             value={filters.search}
                             onChange={(e) => setFilter("search", e.target.value)}
-                            className="flex-1 ml-3 sm:ml-4 bg-transparent text-white text-base sm:text-lg placeholder-neutral-700 placeholder:font-medium border-b border-b-gray-400 focus:outline-none focus:border-white transition-colors leading-tight"
+                            className="flex-1 ml-4 bg-transparent text-white text-lg placeholder-neutral-700 placeholder:font-medium border-b border-b-gray-400 focus:outline-none focus:border-white transition-colors leading-tight"
                         />
                     </div>
                 </div>
 
-                <div className="w-fit mx-auto flex flex-col">
+                {/* Barra Móvil: Filtro + Búsqueda */}
+                <div className="md:hidden flex gap-3 px-0 mb-2 w-full">
+                    {/* Botón Filtro Móvil */}
+                    <button
+                        onClick={() => setShowMobileFilters(true)}
+                        className="shrink-0 flex px-6 py-2 border border-white/30 rounded-full text-sm font-medium transition-colors items-center gap-2 hover:cursor-pointer bg-black text-white hover:bg-white/20"
+                    >
+                        <SlidersHorizontal className="w-4 h-4" />
+                        <span>Filtro</span>
+                    </button>
+
+                    {/* Búsqueda Móvil */}
+                    <div className="flex-1 h-[42px] bg-black rounded-full flex items-center px-4 shadow-lg relative z-10 transition-colors">
+                        <div className="shrink-0 pointer-events-none">
+                            <SearchIcon className="h-4 w-4 text-white" />
+                        </div>
+                        <input
+                            type="text"
+                            placeholder="Busco..."
+                            value={filters.search}
+                            onChange={(e) => setFilter("search", e.target.value)}
+                            className="flex-1 ml-3 bg-transparent text-white text-sm placeholder-neutral-700 placeholder:font-medium border-b border-b-gray-400 focus:outline-none focus:border-white transition-colors leading-tight"
+                        />
+                    </div>
+                </div>
+
+                <div ref={groupsTopRef} className="w-full md:w-fit mx-auto flex flex-col scroll-mt-24">
                     <GroupsCategoryToolbar
                         showFilters={showFilters}
                         setShowFilters={setShowFilters}

@@ -8,15 +8,15 @@ const Footer = () => {
   return (
     <footer className="bg-dark text-white font-outfit font-light">
       <div className="max-w-[1920px] mx-auto px-6 py-12 md:px-16 lg:px-32">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8 lg:gap-12">
-          
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-8 lg:gap-12">
+
           {/* Logo */}
           <div className="lg:col-span-1 flex justify-center lg:justify-start">
-            <Image 
-              src="/logo.png" 
-              alt="Oasis Logo" 
-              width={120} 
-              height={40} 
+            <Image
+              src="/logo.png"
+              alt="Oasis Logo"
+              width={120}
+              height={40}
               className="w-28 h-8 md:w-36 md:h-10"
             />
           </div>
@@ -51,8 +51,8 @@ const Footer = () => {
               </div>
               <div>
                 <p className="font-medium">Correo:</p>
-                <Link 
-                  href="mailto:pastoral@iglesiaoasis.com" 
+                <Link
+                  href="mailto:pastoral@iglesiaoasis.com"
                   className="text-white hover:text-blue-300 transition-colors"
                 >
                   pastoral@iglesiaoasis.com
@@ -76,26 +76,26 @@ const Footer = () => {
           <div className="lg:col-span-1">
             <h3 className="text-lg font-medium mb-4">Redes Sociales:</h3>
             <div className="flex gap-2">
-              <Link 
-                href="https://www.facebook.com/oasis.cr" 
+              <Link
+                href="https://www.facebook.com/oasis.cr"
                 className="p-[3px] bg-white rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors"
               >
                 <FacebookIcon className="w-[15px] h-[15px] text-dark" />
               </Link>
-              <Link 
-                href="https://www.instagram.com/oasis.cr/" 
+              <Link
+                href="https://www.instagram.com/oasis.cr/"
                 className="p-[3px] bg-white rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors"
               >
                 <InstagramIcon className="w-[15px] h-[15px] text-dark" />
               </Link>
-              <Link 
-                href="https://www.youtube.com/@oasis.cr" 
+              <Link
+                href="https://www.youtube.com/@oasis.cr"
                 className="p-[3px] bg-white rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors"
               >
                 <YoutubeIcon className="w-[15px] h-[15px] text-dark" />
               </Link>
-              <Link 
-                href="https://www.tiktok.com/@oasis.cr" 
+              <Link
+                href="https://www.tiktok.com/@oasis.cr"
                 className="p-[3px] bg-white rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors"
               >
                 <TiktokIcon className="w-[15px] h-[15px] text-dark" />
@@ -118,7 +118,7 @@ const Footer = () => {
       </div>
 
       {/* Scroll to Top Button */}
-      <button 
+      <button
         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         className="fixed bottom-8 right-8 w-12 h-12 bg-blue-primary hover:bg-blue-secondary text-white rounded-full flex items-center justify-center shadow-lg transition-colors z-50"
         aria-label="Volver arriba"

@@ -81,7 +81,7 @@ export default function GroupMembersPage() {
                     </Button>
                 </Link>
 
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
                             {group.name}
@@ -97,24 +97,24 @@ export default function GroupMembersPage() {
                         </p>
                     </div>
 
-                    <div className="flex flex-col md:flex-row gap-2 w-full md:w-auto">
+                    <div className="flex flex-col xl:flex-row gap-2 w-full xl:w-auto">
                         <Button
                             variant="outline"
-                            className="cursor-pointer w-full md:w-auto bg-emerald-50 border-emerald-200 text-emerald-700 hover:bg-emerald-100 hover:text-emerald-800 dark:bg-emerald-950 dark:border-emerald-800 dark:text-emerald-400 dark:hover:bg-emerald-900"
+                            className="cursor-pointer w-full xl:w-auto bg-emerald-50 border-emerald-200 text-emerald-700 hover:bg-emerald-100 hover:text-emerald-800 dark:bg-emerald-950 dark:border-emerald-800 dark:text-emerald-400 dark:hover:bg-emerald-900"
                             onClick={handleExportCSV}
                             disabled={!members || members.length === 0}
                         >
                             <Download className="mr-2 h-4 w-4" />
                             Exportar CSV
                         </Button>
-                        <Button className="cursor-pointer w-full md:w-auto" onClick={crud.openAddDialog}>
+                        <Button className="cursor-pointer w-full xl:w-auto" onClick={crud.openAddDialog}>
                             <UserPlus className="mr-2 h-4 w-4" />
                             Agregar Miembro
                         </Button>
                     </div>
                 </div>
 
-                <div className="grid gap-4 md:grid-cols-3">
+                <div className="grid gap-4 xl:grid-cols-3">
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">Ocupación</CardTitle>
@@ -132,7 +132,7 @@ export default function GroupMembersPage() {
                 </div>
 
                 {/* Vista móvil */}
-                <div className="md:hidden">
+                <div className="xl:hidden">
                     <MemberCards
                         members={members}
                         onEdit={crud.openEditDialog}
@@ -141,7 +141,7 @@ export default function GroupMembersPage() {
                 </div>
 
                 {/* Vista desktop */}
-                <div className="hidden md:block">
+                <div className="hidden xl:block">
                     <MembersTable
                         members={members}
                         onEdit={crud.openEditDialog}

@@ -16,10 +16,10 @@ const Header = () => {
 
   return (
     <header className="w-full">
-      <section className="bg-blue-primary text-white font-outfit py-4 md:py-5 px-4">
-        <div className="max-w-[1920px] mx-auto flex flex-col md:flex-row justify-center items-center gap-4 md:gap-6 text-xs">
+      <section className="bg-blue-primary text-white font-outfit py-2 md:py-5 px-4">
+        <div className="max-w-[1920px] mx-auto flex flex-row flex-wrap md:flex-row justify-center items-center gap-x-4 gap-y-2 md:gap-6 text-xs">
           <div className="flex items-center gap-2">
-            <span className="uppercase font-light">Consejería:</span>
+            <span className="uppercase font-light hidden md:inline">Consejería:</span>
             <div className="flex items-center gap-1.5">
               <WhatsAppIcon className="w-3.5 h-3.5" />
               <span className="font-semibold">(+506) 0000-0000</span>
@@ -29,7 +29,7 @@ const Header = () => {
           <div className="hidden md:block bg-white w-px h-4 opacity-60"></div>
 
           <div className="flex items-center gap-2">
-            <span className="uppercase font-light">Escríbenos al:</span>
+            <span className="uppercase font-light hidden md:inline">Escríbenos al:</span>
             <div className="flex items-center gap-1.5">
               <WhatsAppIcon className="w-3.5 h-3.5" />
               <span className="font-semibold">(+506) 8782 7621</span>
@@ -39,7 +39,7 @@ const Header = () => {
           <div className="hidden md:block bg-white w-px h-4 opacity-60"></div>
 
           <div className="flex items-center gap-3">
-            <span className="uppercase font-medium">Síguenos en:</span>
+            <span className="uppercase font-medium hidden md:inline">Síguenos en:</span>
             <div className="flex items-center gap-2">
               <Link
                 className="hover:text-gray-300 cursor-pointer border p-[2.5px] rounded-full border-white"
@@ -70,86 +70,77 @@ const Header = () => {
         </div>
       </section>
 
-      <section className="bg-dark text-white py-6 px-6 md:px-16 md:py-5 lg:px-32">
-        <div className="max-w-[1920px] mx-auto flex justify-between items-center">
-          <Link href="/" className="flex items-center">
-            <Image 
-              src="/logo.png" 
-              alt="oasis" 
-              width={100} 
-              height={100} 
-              className="w-28 h-8 md:w-36 md:h-10"
-            />
-          </Link>
+      <section className="bg-dark text-white py-4 px-6 md:px-16 md:py-5 lg:px-32">
+        <div className="max-w-[1920px] mx-auto flex items-center justify-between">
+          {/* Logo Section - Left */}
+          <div className="flex-none">
+            <Link href="/" className="flex items-center">
+              <Image
+                src="/logo.png"
+                alt="oasis"
+                width={100}
+                height={100}
+                className="w-24 h-auto md:w-36"
+              />
+            </Link>
+          </div>
 
-          <nav className="hidden md:flex items-center space-x-9 text-xs font-medium tracking-wider md:ml-52">
-            <div className="relative group">
-              <button className="flex items-center gap-1 hover:text-gray-300 uppercase">
-                Sobre Nosotros
-                <svg
-                  className="w-3 h-3"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
-              </button>
-            </div>
-            <div className="relative group">
-              <button className="flex items-center gap-1 hover:text-gray-300 uppercase">
-                Únete a un Grupo
-                <svg
-                  className="w-3 h-3"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
-              </button>
-            </div>
-            <Link href="/valores" className="hover:text-gray-300 uppercase">
-              Nuestros Valores
-            </Link>
-            <Link href="/agenda" className="hover:text-gray-300 uppercase">
-              Agenda
-            </Link>
-            <Link href="/dar" className="hover:text-gray-300 uppercase">
-              Dar
-            </Link>
-            <Link href="/contacto" className="hover:text-gray-300 uppercase">
-              Contacto
-            </Link>
-          </nav>
+          {/* Navigation Section - Centered */}
+          <div className="flex-1 flex justify-center">
+            <nav className="hidden md:flex items-center space-x-4 lg:space-x-8 text-[10px] lg:text-xs font-medium tracking-wider">
+              <div className="relative group">
+                <button className="flex items-center gap-1 hover:text-gray-300 uppercase">
+                  Sobre Nosotros
+                  <svg
+                    className="w-3 h-3"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <div className="relative group">
+                <button className="flex items-center gap-1 hover:text-gray-300 uppercase">
+                  Únete a un Grupo
+                  <svg
+                    className="w-3 h-3"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <Link href="/valores" className="hover:text-gray-300 uppercase">
+                Nuestros Valores
+              </Link>
+              <Link href="/agenda" className="hover:text-gray-300 uppercase">
+                Agenda
+              </Link>
+              <Link href="/dar" className="hover:text-gray-300 uppercase">
+                Dar
+              </Link>
+              <Link href="/contacto" className="hover:text-gray-300 uppercase">
+                Contacto
+              </Link>
+            </nav>
+          </div>
 
-          <div className="flex items-center gap-4">
-            <button className="bg-white text-teal-900 p-2 hover:bg-gray-200 rounded-full transition-colors">
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={3}
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-            </button>
-
+          {/* Actions Section - Right */}
+          <div className="flex-none flex items-center gap-4">
             <button
               className="md:hidden p-2 hover:bg-blue-primary rounded"
               onClick={() => setIsMenuOpen(!isMenuOpen)}

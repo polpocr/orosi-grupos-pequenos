@@ -24,7 +24,7 @@ import { TableSkeleton } from "@/components/ui/table-skeleton";
 export function DistrictTable() {
   const districts = useQuery(api.districts.get);
   const remove = useMutation(api.districts.remove);
-  
+
   const [editingDistrict, setEditingDistrict] = useState<{ _id: Id<"districts">; name: string } | null>(null);
   const [districtToDelete, setDistrictToDelete] = useState<Id<"districts"> | null>(null);
 
@@ -47,7 +47,45 @@ export function DistrictTable() {
 
   return (
     <>
-      <div className="rounded-md border border-slate-200 dark:border-zinc-800 bg-white dark:bg-dark overflow-hidden">
+      {/* Mobile View */}
+      <div className="md:hidden space-y-4">
+        {districts.length === 0 ? (
+          <div className="text-center text-slate-500 dark:text-zinc-500 py-8">
+            No hay distritos registrados.
+          </div>
+        ) : (
+          districts.map((district) => (
+            <div key={district._id} className="p-4 rounded-lg border border-slate-200 dark:border-zinc-800 bg-white dark:bg-dark shadow-sm">
+              <div className="flex items-center justify-between mb-3">
+                <span className="font-medium text-slate-900 dark:text-white text-lg">
+                  {district.name}
+                </span>
+              </div>
+              <div className="flex justify-end gap-2 pt-3 border-t border-slate-100 dark:border-zinc-800">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setEditingDistrict(district)}
+                  className="hover:bg-slate-100 dark:hover:bg-zinc-800 text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white cursor-pointer"
+                >
+                  <Pencil className="h-4 w-4 mr-2" /> Editar
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setDistrictToDelete(district._id)}
+                  className="hover:bg-red-900/20 text-red-500 hover:text-red-400 cursor-pointer"
+                >
+                  <Trash2 className="h-4 w-4 mr-2" /> Eliminar
+                </Button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Desktop View */}
+      <div className="hidden md:block rounded-md border border-slate-200 dark:border-zinc-800 bg-white dark:bg-dark overflow-hidden">
         <Table>
           <TableHeader className="bg-slate-50 dark:bg-zinc-900/50">
             <TableRow className="border-slate-200 dark:border-zinc-800 hover:bg-slate-100/50 dark:hover:bg-zinc-900/50">
@@ -58,9 +96,9 @@ export function DistrictTable() {
           <TableBody>
             {districts.length === 0 ? (
               <TableRow>
-                 <TableCell colSpan={2} className="text-center text-slate-500 dark:text-zinc-500 py-8 px-8">
-                   No hay distritos registrados.
-                 </TableCell>
+                <TableCell colSpan={2} className="text-center text-slate-500 dark:text-zinc-500 py-8 px-8">
+                  No hay distritos registrados.
+                </TableCell>
               </TableRow>
             ) : (
               districts.map((district) => (
@@ -78,7 +116,7 @@ export function DistrictTable() {
                       >
                         <Pencil className="h-4 w-4" />
                       </Button>
-                       <Button
+                      <Button
                         variant="ghost"
                         size="icon"
                         onClick={() => setDistrictToDelete(district._id)}
@@ -103,7 +141,7 @@ export function DistrictTable() {
         />
       )}
 
-       <AlertDialog open={!!districtToDelete} onOpenChange={(open) => !open && setDistrictToDelete(null)}>
+      <AlertDialog open={!!districtToDelete} onOpenChange={(open) => !open && setDistrictToDelete(null)}>
         <AlertDialogContent className="bg-white dark:bg-dark border-slate-200 dark:border-zinc-800 text-slate-900 dark:text-white">
           <AlertDialogHeader>
             <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>

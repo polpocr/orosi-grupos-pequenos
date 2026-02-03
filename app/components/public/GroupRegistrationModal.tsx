@@ -89,20 +89,20 @@ export default function GroupRegistrationModal({ groupId, isOpen, onClose, onSuc
                     {/* Botón Cerrar (X) absoluto en la esquina a la derecha */}
                     <button
                         onClick={onClose}
-                        className="absolute top-4 right-1 p-2 text-black transition-colors cursor-pointer z-10"
+                        className="absolute top-4 right-4 p-2 text-black transition-colors cursor-pointer z-10"
                         aria-label="Cerrar"
                     >
                         <X className="w-8 h-8" />
                     </button>
 
-                    <DialogHeader className="mb-2 flex flex-row items-center justify-center w-full">
-                        <DialogTitle className="text-center text-3xl md:text-4xl font-medium text-black tracking-normal">
-                            Datos de Información
+                    <DialogHeader className="mb-2 flex flex-row items-center justify-center w-full px-8">
+                        <DialogTitle className="text-center text-3xl md:text-4xl font-medium text-black tracking-normal leading-tight">
+                            Datos de <br className="md:hidden" /> Información
                         </DialogTitle>
                     </DialogHeader>
 
                     {/* Separator */}
-                    <div className="w-full border-t border-gray-600 mb-8" />
+                    <div className="w-full border-t border-gray-600 mb-8 mx-auto max-w-[200px] md:max-w-full" />
 
                     {/* Error Feedback */}
                     {error && (
@@ -156,18 +156,18 @@ export default function GroupRegistrationModal({ groupId, isOpen, onClose, onSuc
                         </div>
 
                         {/* Buttons */}
-                        <div className="flex justify-center gap-4 pt-14">
+                        <div className="flex flex-col md:flex-row justify-center gap-3 md:gap-4 pt-8 md:pt-14 pb-2">
                             <Button
                                 type="button"
                                 onClick={onClose}
-                                className="w-52 h-12 rounded-full bg-[#D82828] hover:bg-red-700 text-white font-medium text-lg shadow-none border-none cursor-pointer"
+                                className="w-full md:w-52 h-12 rounded-full bg-[#D82828] hover:bg-red-700 text-white font-medium text-lg shadow-none border-none cursor-pointer order-2 md:order-1"
                             >
                                 Cancelar
                             </Button>
                             <Button
                                 type="submit"
                                 disabled={form.formState.isSubmitting}
-                                className="w-52 h-12 rounded-full bg-[#0E2C40] hover:bg-[#1a3b52] text-white font-medium text-lg shadow-none border-none cursor-pointer"
+                                className="w-full md:w-52 h-12 rounded-full bg-[#0E2C40] hover:bg-[#1a3b52] text-white font-medium text-lg shadow-none border-none cursor-pointer order-1 md:order-2"
                             >
                                 {form.formState.isSubmitting ? "Enviando..." : "Unirme"}
                             </Button>

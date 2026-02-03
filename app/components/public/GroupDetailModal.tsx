@@ -102,10 +102,10 @@ export default function GroupDetailModal({ group, isOpen, onClose, category }: G
         >
             <div
                 ref={modalRef}
-                className="relative bg-white w-full max-w-2xl rounded-[30px] shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 px-4 py-0 duration-200 font-outfit tracking-tight"
+                className="relative bg-white w-full max-w-2xl rounded-[30px] shadow-2xl overflow-hidden flex flex-col max-h-[85vh] md:max-h-[90vh] animate-in zoom-in-95 px-4 py-0 duration-200 font-outfit tracking-tight"
             >
                 {/* Lazo (Ribbon) - Esquina Superior Derecha + Botón Cerrar */}
-                <div className="absolute top-0 right-10 z-20 flex items-start">
+                <div className="absolute top-0 right-0 md:right-10 z-20 flex items-start">
                     {/* Lazo */}
                     <div className={`w-12 h-[85px] ${categoryColor} flex items-center justify-center rounded-b-lg shadow-base clip-path-ribbon`}>
                         <div className="text-white">
@@ -127,14 +127,14 @@ export default function GroupDetailModal({ group, isOpen, onClose, category }: G
                 <div className="overflow-y-auto custom-scrollbar p-0 flex flex-col h-full">
 
                     {/* Header Section */}
-                    <div className="px-6 pt-5 pb-2 pr-24">
+                    <div className="px-6 pt-5 pb-2 pr-20 md:pr-24">
                         <h2 className="text-2xl md:text-3xl text-black leading-tight">
                             {group.name}
                         </h2>
                     </div>
 
                     {/* Separador debajo del título */}
-                    <div className="border-t border-slate-800 ml-6 mr-36 mb-4" />
+                    <div className="border-t border-slate-800 ml-6 mr-24 md:mr-36 mb-4" />
 
                     {/* Grid Content */}
                     <div className="px-6 flex flex-col gap-2 mb-4">
@@ -180,7 +180,7 @@ export default function GroupDetailModal({ group, isOpen, onClose, category }: G
                         </div>
 
                         {/* Facilitators Section */}
-                        <div className="mt-1 flex items-center gap-2 text-base text-black font-light">
+                        <div className="mt-1 flex items-start gap-2 text-base text-black font-light">
                             <User className="w-6 h-6 border border-black rounded-full px-0.5 pt-0.5 pb-0" />
                             <span>Facilitadores: {formatLeaders(group.leaders)}</span>
                         </div>

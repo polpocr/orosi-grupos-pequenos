@@ -7,12 +7,12 @@ export default function HomePage() {
       {/* Contenido principal */}
       <section className="w-full">
         <Image
-          src="/hero-home.webp"  
+          src="/hero-home.webp"
           alt="Personas compartiendo en grupo"
-          width={1920}        
-          height={694}       
-          className="w-full h-auto object-cover" 
-          priority           
+          width={1920}
+          height={694}
+          className="w-full h-[300px] sm:h-[400px] md:h-auto object-cover object-center"
+          priority
         />
       </section>
 

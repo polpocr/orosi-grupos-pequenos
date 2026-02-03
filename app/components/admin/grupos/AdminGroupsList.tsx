@@ -68,11 +68,11 @@ export const AdminGroupsCards = ({ groups, dependencies, onDelete }: GroupListPr
     if (groups.length === 0) return <div className="p-8 text-center text-muted-foreground">No se encontraron grupos.</div>;
 
     return (
-        <div className="md:hidden divide-y divide-slate-200 dark:divide-neutral-800">
+        <div className="xl:hidden divide-y divide-slate-200 dark:divide-neutral-800">
             {groups.map((grupo) => (
                 <div key={grupo._id} className="p-4 hover:bg-slate-50 dark:hover:bg-neutral-800 transition-colors">
                     <div className="flex items-start justify-between mb-3">
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-3 flex-1">
                             <div className="h-8 w-8 flex items-center justify-center bg-blue-900/20 rounded-lg">
                                 <Users className="w-4 h-4 text-blue-400" />
                             </div>
@@ -108,7 +108,7 @@ export const AdminGroupsTable = ({ groups, dependencies, onDelete }: GroupListPr
     if (groups.length === 0) return null;
 
     return (
-        <div className="hidden md:block overflow-x-auto">
+        <div className="hidden xl:block overflow-x-auto">
             <table className="w-full">
                 <thead className="bg-slate-50 dark:bg-neutral-950 border-b border-slate-200 dark:border-neutral-800">
                     <tr>

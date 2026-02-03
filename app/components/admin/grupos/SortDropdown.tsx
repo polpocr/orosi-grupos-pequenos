@@ -19,7 +19,7 @@ export const SortDropdown = ({ sortOrder, onSortChange }: SortDropdownProps) => 
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="mr-2">
+                <Button variant="outline" className="w-full xl:w-auto mr-0 xl:mr-2">
                     <ArrowUpDown className="w-4 h-4 mr-2" />
                     Orden
                 </Button>

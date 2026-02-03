@@ -19,23 +19,25 @@ export default function GroupSuccessModal({ isOpen, onClose }: GroupSuccessModal
                 <div className="overflow-y-auto px-8 py-6 h-full flex flex-col items-center justify-center text-center">
                     <CheckCircle className="w-20 h-20 text-[#22C55E] mb-6" />
 
-                    <DialogTitle className="text-center text-3xl md:text-4xl font-normal text-black mb-2 tracking-normal">
-                        Confirmación de Verificación
+                    <DialogTitle className="text-center text-3xl md:text-4xl font-normal text-black mb-2 tracking-normal leading-tight">
+                        Confirmación de <br className="md:hidden" /> Inscripción
                     </DialogTitle>
 
                     {/* Separator - Igual al form */}
-                    <div className="w-full border-t border-gray-600 mb-6" />
+                    <div className="w-full border-t border-gray-600 mb-6 mx-auto max-w-[200px] md:max-w-full" />
 
-                    <div className="text-black space-y-4 mb-6 leading-relaxed font-light text-lg max-w-2xl px-4">
+                    <div className="text-black space-y-4 mb-5 leading-relaxed font-light text-lg max-w-2xl px-4">
                         <p>
-                            La información proporcionada en este formulario ha sido recibida y
-                            registrada correctamente. En breve, recibirá un correo electrónico de
-                            confirmación en la dirección que nos ha facilitado.
+                            Gracias por unirte a los Grupos Conexión.
+                            Espera la confirmación en tu correo electrónico; pronto tu facilitador se pondrá en contacto contigo.
                         </p>
                         <p>
-                            Nuestro equipo revisará su información y se pondrá en contacto con
-                            usted a la mayor brevedad posible a través del correo electrónico.
+                            <span className="font-bold">IMPORTANTE: </span>
+                            Si aún no has completado el formulario de actualización, te agradecemos que lo llenes en el siguiente enlace:
                         </p>
+                        <a href="https://oasiscrecer.com/asistentes/nuevo-formulario/9" target="_blank" className="text-blue-700 hover:underline">
+                            Actualizar Información
+                        </a>
                     </div>
 
                     <Button

@@ -27,7 +27,7 @@ export function CategoryTable() {
   const categories = useQuery(api.categories.get);
   const toggleActive = useMutation(api.categories.toggleActive);
   const remove = useMutation(api.categories.remove);
-  
+
   const [editingCategory, setEditingCategory] = useState<{ _id: Id<"categories">; name: string; color: string; icon: string; isActive: boolean } | null>(null);
   const [categoryToDelete, setCategoryToDelete] = useState<Id<"categories"> | null>(null);
 
@@ -44,7 +44,56 @@ export function CategoryTable() {
 
   return (
     <>
-      <div className="rounded-md border border-slate-200 dark:border-zinc-800 bg-white dark:bg-dark overflow-hidden">
+      {/* Mobile View */}
+      <div className="md:hidden space-y-4">
+        {categories.length === 0 ? (
+          <div className="text-center text-slate-500 dark:text-zinc-500 py-8">
+            No hay categorías registradas.
+          </div>
+        ) : (
+          categories.map((category) => {
+            const Icon = ICON_MAP[category.icon] || ICON_MAP["Heart"];
+            return (
+              <div key={category._id} className="p-4 rounded-lg border border-slate-200 dark:border-zinc-800 bg-white dark:bg-dark shadow-sm">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className={`flex h-10 w-10 items-center justify-center rounded-full ${category.color} text-white`}>
+                      <Icon className="h-5 w-5" />
+                    </div>
+                    <span className="font-medium text-slate-900 dark:text-white">{category.name}</span>
+                  </div>
+                  <Switch
+                    checked={category.isActive}
+                    onCheckedChange={(checked) => toggleActive({ id: category._id, isActive: checked })}
+                    className="data-[state=checked]:bg-blue-600 cursor-pointer"
+                  />
+                </div>
+                <div className="flex justify-end gap-2 pt-3 border-t border-slate-100 dark:border-zinc-800">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setEditingCategory(category)}
+                    className="hover:bg-slate-100 dark:hover:bg-zinc-800 text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white cursor-pointer"
+                  >
+                    <Pencil className="h-4 w-4 mr-2" /> Editar
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setCategoryToDelete(category._id)}
+                    className="hover:bg-red-900/20 text-red-500 hover:text-red-400 cursor-pointer"
+                  >
+                    <Trash2 className="h-4 w-4 mr-2" /> Eliminar
+                  </Button>
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+
+      {/* Desktop View */}
+      <div className="hidden md:block rounded-md border border-slate-200 dark:border-zinc-800 bg-white dark:bg-dark overflow-hidden">
         <Table>
           <TableHeader className="bg-slate-50 dark:bg-zinc-900/50">
             <TableRow className="border-slate-200 dark:border-zinc-800 hover:bg-slate-100/50 dark:hover:bg-zinc-900/50">
@@ -56,9 +105,9 @@ export function CategoryTable() {
           <TableBody>
             {categories.length === 0 ? (
               <TableRow>
-                 <TableCell colSpan={3} className="text-center text-slate-500 dark:text-zinc-500 py-8 px-8">
-                   No hay categorías registradas.
-                 </TableCell>
+                <TableCell colSpan={3} className="text-center text-slate-500 dark:text-zinc-500 py-8 px-8">
+                  No hay categorías registradas.
+                </TableCell>
               </TableRow>
             ) : (
               categories.map((category) => {
@@ -90,7 +139,7 @@ export function CategoryTable() {
                         >
                           <Pencil className="h-4 w-4" />
                         </Button>
-                         <Button
+                        <Button
                           variant="ghost"
                           size="icon"
                           onClick={() => setCategoryToDelete(category._id)}
@@ -116,7 +165,7 @@ export function CategoryTable() {
         />
       )}
 
-       <AlertDialog open={!!categoryToDelete} onOpenChange={(open) => !open && setCategoryToDelete(null)}>
+      <AlertDialog open={!!categoryToDelete} onOpenChange={(open) => !open && setCategoryToDelete(null)}>
         <AlertDialogContent className="bg-white dark:bg-dark border-slate-200 dark:border-zinc-800 text-slate-900 dark:text-white">
           <AlertDialogHeader>
             <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>

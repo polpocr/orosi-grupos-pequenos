@@ -34,9 +34,9 @@ export default function GroupsToolbar({
   categoryFilter,
 }: ExtendedGroupsToolbarProps) {
   return (
-    <div className="flex flex-col md:flex-row gap-3 items-center w-full">
+    <div className="flex flex-col xl:flex-row gap-3 items-center w-full">
       {/* Search */}
-      <div className="relative w-full md:w-72">
+      <div className="relative w-full xl:w-72">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-500" />
         <Input
           className="pl-9 h-10 w-full bg-white dark:bg-neutral-900 border-slate-200 dark:border-neutral-800"
@@ -47,12 +47,12 @@ export default function GroupsToolbar({
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+      <div className="flex flex-col sm:flex-row gap-3 w-full xl:w-auto">
         <Select
           value={districtFilter}
           onValueChange={(val) => onDistritoChange?.(val === "all" ? "all" : val)}
         >
-          <SelectTrigger className="w-full md:w-[150px] h-10 bg-white dark:bg-neutral-900 border-slate-200 dark:border-neutral-800">
+          <SelectTrigger className="w-full xl:w-[150px] h-10 bg-white dark:bg-neutral-900 border-slate-200 dark:border-neutral-800">
             <SelectValue placeholder="Distritos" />
           </SelectTrigger>
           <SelectContent>
@@ -69,7 +69,7 @@ export default function GroupsToolbar({
           value={categoryFilter}
           onValueChange={(val) => onCategoriaChange?.(val === "all" ? "all" : val)}
         >
-          <SelectTrigger className="w-full md:w-[150px] h-10 bg-white dark:bg-neutral-900 border-slate-200 dark:border-neutral-800">
+          <SelectTrigger className="w-full xl:w-[150px] h-10 bg-white dark:bg-neutral-900 border-slate-200 dark:border-neutral-800">
             <SelectValue placeholder="Categorías" />
           </SelectTrigger>
           <SelectContent>
@@ -85,7 +85,7 @@ export default function GroupsToolbar({
 
       {/* Action Buttons (passed as children) */}
       {children && (
-        <div className="w-full md:w-auto flex flex-row gap-2 ml-auto">
+        <div className="w-full xl:w-auto flex flex-col xl:flex-row gap-2 ml-auto">
           {children}
         </div>
       )}
