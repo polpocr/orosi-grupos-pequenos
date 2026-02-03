@@ -5,14 +5,14 @@ import { api } from "@/convex/_generated/api";
 import { useUser } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 import StatsCard from "../components/admin/shared/StatsCard";
-import { Users, Calendar, TrendingUp } from "lucide-react";
+import { Users, FolderOpen, Target, CheckCircle } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function AdminPage() {
   const { user, isLoaded } = useUser();
   const storeUser = useMutation(api.users.storeUser);
   const [userStored, setUserStored] = useState(false);
-  
-  // Guardar usuario en Convex al cargar la página
+
   useEffect(() => {
     if (isLoaded && user && !userStored) {
       storeUser()
@@ -21,16 +21,17 @@ export default function AdminPage() {
     }
   }, [isLoaded, user, userStored, storeUser]);
 
-  // Solo ejecutar la query después de que el usuario esté guardado
   const adminData = useQuery(
     api.admin.getAdminData,
     isLoaded && user && userStored ? undefined : "skip"
   );
 
+  const stats = useQuery(api.stats.getStats);
+
   if (!isLoaded) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <div className="text-lg text-white">Cargando...</div>
+        <div className="text-lg text-slate-600 dark:text-white">Cargando...</div>
       </div>
     );
   }
@@ -48,51 +49,87 @@ export default function AdminPage() {
       </div>
 
       {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <StatsCard
-          title="Total Usuarios"
-          value="1,234"
-          trendValue="+20% desde el mes pasado"
-          icon={Users}
-          trend="up"
-        />
-        <StatsCard
-          title="Grupos Activos"
-          value="42"
-          trendValue="+3 grupos nuevos este mes"
-          icon={Calendar}
-          trend="up"
-        />
-        <StatsCard
-          title="Tasa de Crecimiento"
-          value="+12.5%"
-          trendValue="Comparado con el trimestre anterior"
-          icon={TrendingUp}
-          trend="up"
-        />
-      </div>
+      {stats === undefined ? (
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {[...Array(3)].map((_, i) => (
+            <Skeleton key={i} className="h-32 w-full rounded-lg" />
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <StatsCard
+            title="Total Inscritos"
+            value={stats.totalMembers.toLocaleString()}
+            icon={Users}
+            trend="neutral"
+          />
+          <StatsCard
+            title="Total Grupos"
+            value={stats.totalGroups.toString()}
+            trendValue={`${stats.fullGroups} llenos`}
+            icon={FolderOpen}
+            trend="up"
+          />
+          <StatsCard
+            title="Ocupación General"
+            value={`${stats.occupancyRate}%`}
+            trendValue="del total de cupos"
+            icon={Target}
+            trend={stats.occupancyRate >= 70 ? "up" : "down"}
+          />
+        </div>
+      )}
 
-      {/* Admin Data Section - Optional, can be removed if not needed */}
+      {/* Categorías con grupos */}
+      {stats && stats.groupsByCategory.length > 0 && (
+        <div className="bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-lg p-6">
+          <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
+            Grupos por Categoría
+          </h3>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+            {stats.groupsByCategory.map((cat) => (
+              <div
+                key={cat.name}
+                className="flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-neutral-800 border border-slate-200 dark:border-neutral-700"
+              >
+                <div className={`w-3 h-3 rounded-full ${cat.color}`} />
+                <div>
+                  <p className="text-sm font-medium text-slate-900 dark:text-white">
+                    {cat.name}
+                  </p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    {cat.count} {cat.count === 1 ? "grupo" : "grupos"}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Admin Auth Status */}
       {adminData !== undefined && (
-        <div className="bg-white dark:bg-dark-border border border-slate-200 dark:border-dark-border-light rounded-lg p-6">
-          <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
+        <div className="bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-lg p-6">
+          <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
             Estado de Autenticación
           </h3>
           {adminData === null ? (
             <div className="rounded-md bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 p-4 text-red-700 dark:text-red-400">
               <p className="font-medium">Error de Autorización</p>
               <p className="mt-1 text-sm">
-                Tu email no está registrado como administrador en la base de datos.
+                Tu email no está registrado como administrador.
               </p>
             </div>
           ) : (
-            <div className="rounded-md bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-900/50 p-4">
-              <p className="font-medium text-green-700 dark:text-green-400">
-                {adminData.message}
-              </p>
-              <div className="mt-3 space-y-1 text-sm text-green-600 dark:text-green-500">
-                <p>Email autorizado: {adminData.user.email}</p>
-                <p>Nombre: {adminData.user.name}</p>
+            <div className="flex items-start gap-3 rounded-md bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-900/50 p-4">
+              <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400 mt-0.5" />
+              <div>
+                <p className="font-medium text-green-700 dark:text-green-400">
+                  {adminData.message}
+                </p>
+                <p className="text-sm text-green-600 dark:text-green-500 mt-1">
+                  {adminData.user.email}
+                </p>
               </div>
             </div>
           )}

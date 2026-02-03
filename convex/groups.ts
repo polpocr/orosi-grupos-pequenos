@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { ConvexError } from "convex/values";
+import { paginationOptsValidator } from "convex/server";
 
 export const getFormDependencies = query({
   args: {},
@@ -27,6 +28,7 @@ export const get = query({
     return await ctx.db.get(args.id);
   },
 });
+
 
 export const list = query({
   args: {},
@@ -58,6 +60,74 @@ export const list = query({
     );
 
     return groupsWithDistricts;
+  },
+});
+
+export const getPublicGroups = query({
+  args: {
+    paginationOpts: paginationOptsValidator,
+    search: v.optional(v.string()),
+    category: v.optional(v.string()),
+    district: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    // Modo Búsqueda
+    if (args.search) {
+       return await ctx.db
+        .query("groups")
+        .withSearchIndex("search_name", (q) => q.search("name", args.search!))
+        .paginate(args.paginationOpts);
+    }
+
+    // Modo Filtrado 
+    let q = ctx.db.query("groups");
+
+    // Aplicar filtros condicionales
+    if (args.category && args.category !== "all") {
+        q = q.filter((q) => q.eq(q.field("categoryId"), args.category));
+    }
+
+    if (args.district && args.district !== "all") {
+        q = q.filter((q) => q.eq(q.field("districtId"), args.district));
+    }
+
+    // Ordenar y Paginar
+    return await q.order("desc").paginate(args.paginationOpts);
+  },
+});
+
+export const getGroups = query({
+  args: { 
+    paginationOpts: paginationOptsValidator,
+    searchQuery: v.optional(v.string()),
+    sortOrder: v.optional(v.string()), // "asc" | "desc"
+    categoryId: v.optional(v.string()),
+    districtId: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    if (args.searchQuery) {
+      return await ctx.db
+        .query("groups")
+        .withSearchIndex("search_name", (q) => 
+          q.search("name", args.searchQuery!)
+        )
+        .paginate(args.paginationOpts);
+    }
+
+    const order = args.sortOrder === "asc" ? "asc" : "desc";
+
+    let query = ctx.db.query("groups");
+
+    // Aplicar filtros
+    if (args.categoryId) {
+      query = query.filter((q) => q.eq(q.field("categoryId"), args.categoryId));
+    }
+
+    if (args.districtId) {
+      query = query.filter((q) => q.eq(q.field("districtId"), args.districtId));
+    }
+
+    return await query.order(order).paginate(args.paginationOpts);
   },
 });
 

@@ -56,7 +56,10 @@ export default defineSchema({
   })
   .index("by_season", ["seasonId"]) 
   .index("by_category", ["categoryId"])
-  .index("by_district", ["districtId"]),
+  .index("by_district", ["districtId"])
+  .searchIndex("search_name", {
+    searchField: "name",
+  }),
 
   members: defineTable({
     groupId: v.id("groups"), 
@@ -65,5 +68,6 @@ export default defineSchema({
     email: v.string(),
     phone: v.string(),
     timestamp: v.number(),
-  }).index("by_group", ["groupId"]),
+  }).index("by_group", ["groupId"])
+  .index("by_email", ["email"]),
 });

@@ -20,16 +20,34 @@ export const add = mutation({
     phone: v.string(),
   },
   handler: async (ctx, args) => {
+    // 1. Obtener el grupo destino y su temporada
     const group = await ctx.db.get(args.groupId);
     if (!group) {
       throw new ConvexError("Grupo no encontrado");
     }
 
+    const targetSeasonId = group.seasonId;
+
+    // 2. Buscar inscripciones existentes del email
+    const existingMembers = await ctx.db
+      .query("members")
+      .withIndex("by_email", (q) => q.eq("email", args.email))
+      .collect();
+
+    // 3. Verificar si ya está inscrito en un grupo de la misma temporada
+    for (const member of existingMembers) {
+      const memberGroup = await ctx.db.get(member.groupId);
+      if (memberGroup && memberGroup.seasonId === targetSeasonId) {
+        throw new ConvexError("Ya estás inscrito en un grupo para esta temporada.");
+      }
+    }
+
+    // 4. Validar capacidad del grupo
     if (group.currentMembersCount >= group.capacity) {
       throw new ConvexError("El grupo ha alcanzado su capacidad máxima");
     }
 
-    // 1. Insertar el nuevo miembro
+    // 5. Insertar el nuevo miembro
     const memberId = await ctx.db.insert("members", {
       groupId: args.groupId,
       fullName: args.fullName,
@@ -38,7 +56,7 @@ export const add = mutation({
       timestamp: Date.now(),
     });
 
-    // 2. Actualizar el contador del grupo
+    // 6. Actualizar el contador del grupo
     await ctx.db.patch(args.groupId, {
       currentMembersCount: group.currentMembersCount + 1,
     });

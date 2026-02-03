@@ -17,6 +17,9 @@ interface ExtendedGroupsToolbarProps extends GroupsToolbarProps {
   districts?: Doc<"districts">[];
   categories?: Doc<"categories">[];
   children?: React.ReactNode;
+  searchValue?: string;
+  districtFilter?: string;
+  categoryFilter?: string;
 }
 
 export default function GroupsToolbar({
@@ -26,6 +29,9 @@ export default function GroupsToolbar({
   districts,
   categories,
   children,
+  searchValue,
+  districtFilter,
+  categoryFilter,
 }: ExtendedGroupsToolbarProps) {
   return (
     <div className="flex flex-col md:flex-row gap-3 items-center w-full">
@@ -35,45 +41,52 @@ export default function GroupsToolbar({
         <Input
           className="pl-9 h-10 w-full bg-white dark:bg-neutral-900 border-slate-200 dark:border-neutral-800"
           placeholder="Buscar grupos..."
+          value={searchValue}
           onChange={(e) => onSearch?.(e.target.value)}
         />
       </div>
 
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
-        <Select onValueChange={(val) => onDistritoChange?.(val === "all" ? "all" : val)}>
-            <SelectTrigger className="w-full md:w-[180px] h-10 bg-white dark:bg-neutral-900 border-slate-200 dark:border-neutral-800">
-                <SelectValue placeholder="Todos los Distritos" />
-            </SelectTrigger>
-            <SelectContent>
-                <SelectItem value="all" className="cursor-pointer">Todos los Distritos</SelectItem>
-                {districts?.map((d) => (
-                    <SelectItem key={d._id} value={d._id} className="cursor-pointer">
-                        {d.name}
-                    </SelectItem>
-                ))}
-            </SelectContent>
+        <Select
+          value={districtFilter}
+          onValueChange={(val) => onDistritoChange?.(val === "all" ? "all" : val)}
+        >
+          <SelectTrigger className="w-full md:w-[150px] h-10 bg-white dark:bg-neutral-900 border-slate-200 dark:border-neutral-800">
+            <SelectValue placeholder="Distritos" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all" className="cursor-pointer">Distritos</SelectItem>
+            {districts?.map((d) => (
+              <SelectItem key={d._id} value={d._id} className="cursor-pointer">
+                {d.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
         </Select>
 
-        <Select onValueChange={(val) => onCategoriaChange?.(val === "all" ? "all" : val)}>
-            <SelectTrigger className="w-full md:w-[180px] h-10 bg-white dark:bg-neutral-900 border-slate-200 dark:border-neutral-800">
-                <SelectValue placeholder="Todas las Categorías" />
-            </SelectTrigger>
-            <SelectContent>
-                <SelectItem value="all" className="cursor-pointer">Todas las Categorías</SelectItem>
-                {categories?.map((c) => (
-                    <SelectItem key={c._id} value={c._id} className="cursor-pointer">
-                        {c.name}
-                    </SelectItem>
-                ))}
-            </SelectContent>
+        <Select
+          value={categoryFilter}
+          onValueChange={(val) => onCategoriaChange?.(val === "all" ? "all" : val)}
+        >
+          <SelectTrigger className="w-full md:w-[150px] h-10 bg-white dark:bg-neutral-900 border-slate-200 dark:border-neutral-800">
+            <SelectValue placeholder="Categorías" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all" className="cursor-pointer">Categorías</SelectItem>
+            {categories?.map((c) => (
+              <SelectItem key={c._id} value={c._id} className="cursor-pointer">
+                {c.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
         </Select>
       </div>
 
       {/* Action Buttons (passed as children) */}
       {children && (
-        <div className="w-full md:w-auto">
-            {children}
+        <div className="w-full md:w-auto flex flex-row gap-2 ml-auto">
+          {children}
         </div>
       )}
     </div>

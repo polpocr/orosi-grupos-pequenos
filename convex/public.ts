@@ -11,40 +11,42 @@ export const registerMember = mutation({
     phone: v.string(),
   },
   handler: async (ctx, args) => {
-    // 1. Validar Duplicados
-    // Buscamos si ya existe un miembro con este email en el grupo específico
-    const existingMember = await ctx.db
-      .query("members")
-      .withIndex("by_group", (q) => q.eq("groupId", args.groupId))
-      .filter((q) => q.eq(q.field("email"), args.email))
-      .first();
-
-    if (existingMember) {
-      throw new ConvexError("Este correo ya está registrado en este grupo.");
-    }
-
-    // 2. Validación de Cupo
+    // 1. Obtener el grupo destino y validar existencia
     const group = await ctx.db.get(args.groupId);
     if (!group) {
-        throw new ConvexError("El grupo no existe.");
+      throw new ConvexError("El grupo no existe.");
     }
 
+    const targetSeasonId = group.seasonId;
+
+    // 2. Validar que el email no esté inscrito en otro grupo de la MISMA temporada
+    const existingMembers = await ctx.db
+      .query("members")
+      .withIndex("by_email", (q) => q.eq("email", args.email))
+      .collect();
+
+    for (const member of existingMembers) {
+      const memberGroup = await ctx.db.get(member.groupId);
+      if (memberGroup && memberGroup.seasonId === targetSeasonId) {
+        throw new ConvexError("Ya estás inscrito en un grupo para esta temporada.");
+      }
+    }
+
+    // 3. Validación de cupo
     if (group.currentMembersCount >= group.capacity) {
       throw new ConvexError("El grupo ya está lleno.");
     }
 
-    // 3. Ejecución
-    // Insertar miembro
+    // 4. Insertar miembro
     await ctx.db.insert("members", {
       groupId: args.groupId,
       fullName: args.fullName,
       email: args.email,
       phone: args.phone,
       timestamp: Date.now(),
-      // userId se deja undefined
     });
 
-    // Actualizar contador del grupo
+    // 5. Actualizar contador del grupo
     await ctx.db.patch(args.groupId, {
       currentMembersCount: group.currentMembersCount + 1,
     });
