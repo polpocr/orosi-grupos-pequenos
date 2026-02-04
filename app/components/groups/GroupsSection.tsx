@@ -258,10 +258,10 @@ const GroupsSection = () => {
             {/* Modal de Filtros Móvil */}
             <Dialog open={showMobileFilters} onOpenChange={setShowMobileFilters}>
                 <DialogContent className="h-screen max-h-screen w-screen max-w-none m-0 p-0 rounded-none bg-blue-secondary text-white border-none">
-                    <DialogHeader className="p-6 pb-4 border-b border-white/20">
+                    <DialogHeader className="px-4 pt-12 pb-2 border-none">
                         <DialogTitle className="text-2xl font-outfit text-white">Filtros</DialogTitle>
                     </DialogHeader>
-                    <div className="flex-1 overflow-y-auto p-6">
+                    <div className="flex-1 overflow-y-auto px-4 pb-6">
                         <FilterSidebar
                             filters={sidebarFilters}
                             setFilters={handleSidebarChange}
