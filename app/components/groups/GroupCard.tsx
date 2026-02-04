@@ -44,7 +44,7 @@ export default function GroupCard({ group, category, onViewDetails }: GroupCardP
   const statusText = isFull ? "Cupo lleno" : "Disponible";
 
   return (
-    <div className="relative bg-white max-w-[440px] max-h-[300px] rounded-[37px] p-7 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col justify-between overflow-hidden group border border-transparent hover:border-slate-100 font-raleway">
+    <div className="relative bg-white max-w-[440px] h-full rounded-[37px] p-7 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col justify-between overflow-hidden group border border-transparent hover:border-slate-100 font-raleway">
 
       {/* Cinta (Ribbon) de Categoría */}
       <div className="absolute top-0 right-7">
@@ -60,7 +60,7 @@ export default function GroupCard({ group, category, onViewDetails }: GroupCardP
       <div className="flex flex-col gap-3 mt-1">
         {/* Estado de Disponibilidad */}
         <div className="flex items-center gap-2 -mt-5">
-          <div className={`w-3 h-3 rounded-full ${statusColor}`} />
+          <div className={`w-3 h-3 rounded-full border border-black ${statusColor}`} />
           <span className="text-sm font-bold text-slate-800">{statusText}</span>
         </div>
 
@@ -79,7 +79,7 @@ export default function GroupCard({ group, category, onViewDetails }: GroupCardP
           </div>
 
           <div className="flex flex-col">
-            <span className="text-slate-900 block">Hora: <span className=" text-slate-700 inline">{group.time}</span></span>
+            <span className="text-slate-900 block">Hora: <span className=" text-slate-700 inline">{group.time.split(':').slice(0, 2).join(':')}</span></span>
           </div>
 
           <div className="w-full border-t border-slate-400 my-2" />

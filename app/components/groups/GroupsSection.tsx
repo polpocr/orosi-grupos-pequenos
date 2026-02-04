@@ -8,7 +8,7 @@ import { SlidersHorizontal } from "lucide-react";
 import { api } from "@/convex/_generated/api";
 import { useQuery } from "convex/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { FilterSidebar } from "./filters/FilterSidebar";
 import { GroupsCategoryToolbar } from "./GroupsCategoryToolbar";
 import { GroupsGridList } from "./GroupsGridList";
@@ -21,6 +21,13 @@ const GroupsSection = () => {
     const dependencies = useQuery(api.groups.getFormDependencies);
 
     // Inicializar Hook
+    // Parsear rango de edad desde URL o usar default
+    const ageParam = searchParams.get("ageRange");
+    const initialAgeRange: [number, number] | undefined = ageParam
+        ? (ageParam.split(",").map(Number) as [number, number])
+        : undefined;
+
+    // Inicializar Hook con todos los filtros desde URL
     const {
         groups,
         isLoading,
@@ -31,14 +38,20 @@ const GroupsSection = () => {
         canNext,
         canPrev,
         setFilter,
-        filters
+        filters,
+        options // Opciones dinámicas
     } = usePublicGroups({
         search: searchParams.get("q") || "",
         category: searchParams.get("category") || "all",
-        district: searchParams.get("district") || ""
+        district: searchParams.get("district") || "",
+        modality: searchParams.get("modality") || "",
+        day: searchParams.get("day") || "",
+        schedule: searchParams.get("schedule") || "",
+        target: searchParams.get("target") || "",
+        mode: searchParams.get("mode") || "",
+        ageRange: initialAgeRange,
     });
 
-    // Estado local para UI
     // Estado local para UI
     const [selectedGroup, setSelectedGroup] = useState<Doc<"groups"> | null>(null);
     const [showFilters, setShowFilters] = useState(searchParams.get("showFilters") === "true");
@@ -56,15 +69,46 @@ const GroupsSection = () => {
     useEffect(() => {
         const params = new URLSearchParams(searchParams.toString());
 
+        // Búsqueda
         if (filters.search) params.set("q", filters.search);
         else params.delete("q");
 
+        // Categoría
         if (filters.category && filters.category !== "all") params.set("category", filters.category);
         else params.delete("category");
 
+        // Distrito (Ubicación)
         if (filters.district) params.set("district", filters.district);
         else params.delete("district");
 
+        // Modalidad
+        if (filters.modality) params.set("modality", filters.modality);
+        else params.delete("modality");
+
+        // Día
+        if (filters.day) params.set("day", filters.day);
+        else params.delete("day");
+
+        // Horario
+        if (filters.schedule) params.set("schedule", filters.schedule);
+        else params.delete("schedule");
+
+        // Público (Target)
+        if (filters.target) params.set("target", filters.target);
+        else params.delete("target");
+
+        // Modo
+        if (filters.mode) params.set("mode", filters.mode);
+        else params.delete("mode");
+
+        // Rango de Edad
+        if (filters.ageRange && (filters.ageRange[0] !== 18 || filters.ageRange[1] !== 99)) {
+            params.set("ageRange", `${filters.ageRange[0]},${filters.ageRange[1]}`);
+        } else {
+            params.delete("ageRange");
+        }
+
+        // UI State
         if (showFilters) params.set("showFilters", "true");
         else params.delete("showFilters");
 
@@ -72,23 +116,30 @@ const GroupsSection = () => {
         if (newSearch !== searchParams.toString()) {
             router.replace(`?${newSearch}`, { scroll: false });
         }
-    }, [filters, showFilters, router, searchParams]);
+    }, [
+        filters.search,
+        filters.category,
+        filters.district,
+        filters.modality,
+        filters.day,
+        filters.schedule,
+        filters.target,
+        filters.mode,
+        filters.ageRange,
+        showFilters,
+        router,
+        searchParams
+    ]);
 
     // Adaptador de filtros (Helper extraído para eliminar 'any' y limpiar código)
     const { sidebarFilters, handleSidebarChange } = useGroupsFilterAdapter({
-        filters,
+        filters: filters as any, // Cast por compatibilidad de tipos estricta si es necesario
         setFilter: (key, value) => setFilter(key, value)
     });
 
-
-    // Calcular opciones visuales para Sidebar
-    const derivedOptions = useMemo(() => {
-        return { modalities: [], days: [], schedules: [], targets: [] };
-    }, []);
-
     return (
         <section className="bg-blue-secondary text-white font-outfit">
-            <div className="max-w-[1920px] mx-auto px-6 py-16 md:px-16 lg:px-32 font-light">
+            <div className={`max-w-[1920px] mx-auto px-6 py-16 md:px-16 ${showFilters ? 'lg:px-14' : 'lg:px-32'} font-light`}>
                 {/* Header */}
                 <div className="text-center mb-8 md:mb-12">
                     <h1 className="text-xl mb-6 md:text-6xl md:mb-10">Grupos Conexión</h1>
@@ -161,7 +212,7 @@ const GroupsSection = () => {
                                     filters={sidebarFilters}
                                     setFilters={handleSidebarChange}
                                     dependencies={dependencies}
-                                    options={derivedOptions}
+                                    options={options}
                                     isMobile={false}
                                 />
                             </div>
@@ -183,6 +234,12 @@ const GroupsSection = () => {
                                     setFilter("search", "");
                                     setFilter("category", "all");
                                     setFilter("district", "");
+                                    setFilter("modality", "");
+                                    setFilter("day", "");
+                                    setFilter("schedule", "");
+                                    setFilter("target", "");
+                                    setFilter("mode", "");
+                                    setFilter("ageRange", [18, 99]);
                                 }}
                                 showFilters={showFilters}
                             />
@@ -209,7 +266,7 @@ const GroupsSection = () => {
                             filters={sidebarFilters}
                             setFilters={handleSidebarChange}
                             dependencies={dependencies}
-                            options={derivedOptions}
+                            options={options}
                             isMobile={true}
                             onApply={() => setShowMobileFilters(false)}
                         />

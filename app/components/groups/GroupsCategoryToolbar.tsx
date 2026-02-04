@@ -79,7 +79,7 @@ export const GroupsCategoryToolbar = ({
                 >
                     {showFilters ? (
                         <>
-                            <SlidersHorizontal className="w-4 h-4" />
+                            <ChevronLeft className="w-4 h-4" />
                             <span className="opacity-40 font-light">|</span>
                             <span>Filtro</span>
                         </>

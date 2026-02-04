@@ -14,10 +14,15 @@ export const getFormDependencies = query({
     const districts = await ctx.db.query("districts").collect();
     const seasons = await ctx.db.query("seasons").collect();
 
+    // Obtener targets únicos de los grupos
+    const groups = await ctx.db.query("groups").collect();
+    const uniqueTargets = Array.from(new Set(groups.map(g => g.targetAudience).filter(Boolean))).sort();
+
     return {
       categories,
       districts,
       seasons,
+      targets: uniqueTargets, 
     };
   },
 });
@@ -63,6 +68,9 @@ export const list = query({
   },
 });
 
+// Deprecated in favor of client-side filtering for complex logic,
+// OR updated to be a simple fetch-all for the public view.
+// We will keep this for backward compat if needed, but create a new one.
 export const getPublicGroups = query({
   args: {
     paginationOpts: paginationOptsValidator,
@@ -93,6 +101,53 @@ export const getPublicGroups = query({
 
     // Ordenar y Paginar
     return await q.order("desc").paginate(args.paginationOpts);
+  },
+});
+
+// New query for full client-side filtering support
+export const getAllPublicGroups = query({
+  args: {},
+  handler: async (ctx) => {
+    // Fetch all groups to allow client-side filtering
+    // Optimizations: We could filter by active season/category here if known.
+    const groups = await ctx.db.query("groups").collect();
+    
+    // We should probably filter by Active Categories here to be safe
+    const activeCategories = await ctx.db
+      .query("categories")
+      .filter((q) => q.eq(q.field("isActive"), true))
+      .collect();
+        
+    const activeCategoryIds = new Set(activeCategories.map(c => c._id));
+    
+    // Enriched or raw? The client expects standard fields.
+    // UI might need district names?
+    // Frontend logic seems to expect `group.districtId` and `dependencies.districts`.
+    // But `GroupCard` expects `group.district` object sometimes.
+    // Let's check `getPublicGroups` output. It returns raw groups.
+    // BUT `list` above returns enriched.
+    // `usePublicGroups` uses `results` which are raw groups from `paginate`.
+    // The Frontend likely resolves district name via dependencies OR simple ID match.
+    // Actually `GroupCard` interface says `district?: { name: string }`.
+    // `getPublicGroups` (paginated) does NOT join districts.
+    // So the current frontend likely looks up district name manually or it's missing?
+    // In `GroupsSection`, checks `group.district?.name`.
+    // Wait, `GroupsGridList` -> `GroupCard`.
+    // `GroupCard` uses `group.district?.name`.
+    // If `getPublicGroups` doesn't populate `district`, then it's undefined.
+    // Does the frontend break? `GroupsSection.tsx` Lines 169: `{group.district?.name || group.address}`.
+    // If I switch to `getAllPublicGroups`, I can do the join here if I want, or stay raw.
+    // Let's stay raw to match `getPublicGroups` behavior, but wait...
+    // The current `getPublicGroups` (lines 66-97) DOES NOT JOIN district.
+    // So usually `group.district` is undefined.
+    // If I want to be "Senior Dev", I should fix that?
+    // Or maybe `GroupsGridList` uses `dependencies` to find district name?
+    // Let's look at `GroupCard.tsx`: `group: GroupWithDistrict`.
+    // `GroupsGridList` passes `group` from `groups` array.
+    // Users probably see "Address" but not "District Name" if join is missing.
+    // I will return the raw groups + filter by active category.
+    
+    return groups.filter(g => activeCategoryIds.has(g.categoryId)).sort((a,b) => b._creationTime - a._creationTime);
   },
 });
 

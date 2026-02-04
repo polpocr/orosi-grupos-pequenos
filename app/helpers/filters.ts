@@ -28,6 +28,19 @@ export const mapSimpleOptions = (opts: string[]) => opts.map(o => ({ value: o, l
 
 export const mapScheduleOptions = (opts: string[]) => opts.map(o => ({ value: o, label: scheduleLabels[o] || o }));
 
+export const modalityLabels: Record<string, string> = {
+    "Híbrido": "Híbrido (presencial-virtual)",
+};
+
+export const mapModalityOptions = (opts: string[]) => {
+    return opts
+        .filter(o => o !== "Virtual (Zoom/Teams)") // Remove unwanted option
+        .map(o => ({ 
+            value: o, 
+            label: modalityLabels[o] || o 
+        }));
+};
+
 export const mapDistrictOptions = (dists: { _id: string; name: string }[]) => dists.map(d => ({ value: d._id, label: d.name }));
 
 // Helper Functions

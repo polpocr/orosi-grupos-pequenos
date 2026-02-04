@@ -18,7 +18,7 @@ import PaginationControls from "@/app/components/admin/shared/PaginationControls
 
 // Group Modular Components
 import GroupsToolbar from "@/app/components/admin/grupos/GroupsToolbar";
-import { AdminGroupsCards, AdminGroupsTable } from "@/app/components/admin/grupos/AdminGroupsList";
+import { AdminGroupsCards, AdminGroupsTable, AdminGroupsTableTablet } from "@/app/components/admin/grupos/AdminGroupsList";
 import { SortDropdown } from "@/app/components/admin/grupos/SortDropdown";
 import ImportGroupsModal from "@/app/components/admin/grupos/ImportGroupsModal";
 
