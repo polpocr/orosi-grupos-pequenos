@@ -1,5 +1,7 @@
 import Image from "next/image";
 import GroupsSection from "../components/groups/GroupsSection";
+import { Suspense } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function HomePage() {
   return (
@@ -17,7 +19,9 @@ export default function HomePage() {
       </section>
 
       {/* Sección de Grupos */}
-      <GroupsSection />
+      <Suspense fallback={<div className="container mx-auto px-4 py-8"><Skeleton className="h-96 w-full" /></div>}>
+        <GroupsSection />
+      </Suspense>
 
     </div>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { Suspense, useState, useEffect } from "react";
 import Link from "next/link";
 import { usePaginatedQuery, useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -24,7 +24,7 @@ import ImportGroupsModal from "@/app/components/admin/grupos/ImportGroupsModal";
 
 const ITEMS_PER_PAGE = 8;
 
-export default function GruposPage() {
+function GruposPageContent() {
   // URL handling
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -193,5 +193,13 @@ export default function GruposPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function GruposPage() {
+  return (
+    <Suspense fallback={<div className="p-8"><Skeleton className="h-10 w-full" /></div>}>
+      <GruposPageContent />
+    </Suspense>
   );
 }
