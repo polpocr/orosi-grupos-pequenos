@@ -49,7 +49,7 @@ const GroupsSection = () => {
         schedule: searchParams.get("schedule") || "",
         target: searchParams.get("target") || "",
         mode: searchParams.get("mode") || "",
-        ageRange: initialAgeRange,
+        ageRange: initialAgeRange || [18, 99],
     });
 
     // Estado local para UI
@@ -168,7 +168,7 @@ const GroupsSection = () => {
                 </div>
 
                 {/* Barra Móvil: Filtro + Búsqueda */}
-                <div className="md:hidden flex gap-3 px-0 mb-2 w-full">
+                <div className="md:hidden flex gap-3 px-1 mb-2 w-full max-w-full overflow-hidden items-center justify-between">
                     {/* Botón Filtro Móvil */}
                     <button
                         onClick={() => setShowMobileFilters(true)}
@@ -179,7 +179,7 @@ const GroupsSection = () => {
                     </button>
 
                     {/* Búsqueda Móvil */}
-                    <div className="flex-1 h-[42px] bg-black rounded-full flex items-center px-4 shadow-lg relative z-10 transition-colors">
+                    <div className="flex-1 min-w-0 h-[42px] bg-black rounded-full flex items-center px-4 shadow-lg relative z-10 transition-colors">
                         <div className="shrink-0 pointer-events-none">
                             <SearchIcon className="h-4 w-4 text-white" />
                         </div>
@@ -188,7 +188,7 @@ const GroupsSection = () => {
                             placeholder="Busco..."
                             value={filters.search}
                             onChange={(e) => setFilter("search", e.target.value)}
-                            className="flex-1 ml-3 bg-transparent text-white text-sm placeholder-neutral-700 placeholder:font-medium border-b border-b-gray-400 focus:outline-none focus:border-white transition-colors leading-tight"
+                            className="w-full min-w-0 ml-3 bg-transparent text-white text-sm placeholder-neutral-700 placeholder:font-medium border-b border-b-gray-400 focus:outline-none focus:border-white transition-colors leading-tight"
                         />
                     </div>
                 </div>
