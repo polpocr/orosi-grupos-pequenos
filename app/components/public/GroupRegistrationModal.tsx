@@ -16,7 +16,7 @@ import { ConvexError } from "convex/values";
 const formSchema = z.object({
     fullName: z.string().min(1, { message: "El nombre es obligatorio" }),
     email: z.string().email({ message: "Correo electrónico inválido" }),
-    phone: z.string().min(1, { message: "El teléfono es obligatorio" }),
+    phone: z.string().min(1, { message: "El teléfono es obligatorio" }).regex(/^[\d\s\-\+\(\)]+$/, { message: "El teléfono solo puede contener números y símbolos válidos (+, -, paréntesis)" }),
 });
 
 interface GroupRegistrationModalProps {
@@ -145,6 +145,7 @@ export default function GroupRegistrationModal({ groupId, isOpen, onClose, onSuc
                         <div>
                             <Input
                                 placeholder="*Teléfono"
+                                type="tel"
                                 className="h-12 text-lg px-4 rounded-none border-gray-600 focus:border-slate-800 focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ring-0 ring-offset-0 outline-none transition-colors placeholder:text-gray-300 text-black"
                                 {...form.register("phone")}
                             />

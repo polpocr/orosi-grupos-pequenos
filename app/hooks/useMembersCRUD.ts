@@ -58,6 +58,12 @@ export function useMembersCRUD(groupId: Id<"groups">) {
             return;
         }
 
+        const phoneRegex = /^[\d\s\-\+\(\)]+$/;
+        if (formData.phone && !phoneRegex.test(formData.phone)) {
+            toast.error("El teléfono tiene formato inválido");
+            return;
+        }
+
         setIsSubmitting(true);
         try {
             if (editingMemberId) {
