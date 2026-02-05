@@ -1,3 +1,5 @@
+export type CSVValue = string | number | boolean | null | undefined;
+
 export interface CSVOptions {
     headers?: string[];
     headerLabels?: Record<string, string>;
@@ -5,23 +7,23 @@ export interface CSVOptions {
 }
 
 // Escapa valores CSV según RFC 4180 (comillas, comas, saltos de línea)
-function escapeCSVValue(value: unknown): string {
+function escapeCSVValue(value: CSVValue): string {
     if (value === null || value === undefined) return "";
     const stringValue = String(value);
-    if (stringValue.includes(",") || stringValue.includes('"') || stringValue.includes("\n") || stringValue.includes("\r")) {
+    if (stringValue.includes(",") || stringValue.includes(";") || stringValue.includes('"') || stringValue.includes("\n") || stringValue.includes("\r")) {
         return `"${stringValue.replace(/"/g, '""')}"`;
     }
     return stringValue;
 }
 
-export function downloadCSV<T extends Record<string, unknown>>(
+export function downloadCSV<T extends Record<string, CSVValue>>(
     data: T[],
     filename: string,
     options: CSVOptions = {}
 ): void {
     if (!data || data.length === 0) return;
 
-    const { delimiter = ",", headerLabels = {} } = options;
+    const { delimiter = ";", headerLabels = {} } = options;
     const headers = options.headers || Object.keys(data[0]);
 
     const headerRow = headers.map((h) => escapeCSVValue(headerLabels[h] || h)).join(delimiter);
@@ -51,14 +53,18 @@ interface CSVParseResult<T> {
     errors: string[];
 }
 
-export function parseCSV<T extends Record<string, unknown>>(
+export function parseCSV<T extends Record<string, CSVValue>>(
     content: string,
     columnMapping: Record<string, keyof T>
 ): CSVParseResult<T> {
     // Limpiar BOM si existe
     const cleanContent = content.replace(/^\uFEFF/, "");
     
-    const lines = cleanContent.split(/\r?\n/).filter((line) => line.trim() && !line.trim().startsWith("#"));
+    const lines = cleanContent.split(/\r?\n/).filter((line) => 
+        line.trim() && 
+        !line.trim().startsWith("#") &&
+        !line.trim().toLowerCase().startsWith("sep=")
+    );
     if (lines.length < 2) {
         return { data: [], errors: ["El archivo debe tener al menos un encabezado y una fila de datos"] };
     }
@@ -103,11 +109,11 @@ export function parseCSV<T extends Record<string, unknown>>(
         const values = parseCSVLine(lines[i], delimiter);
         if (values.length === 0 || values.every((v) => !v.trim())) continue;
 
-        const row: Record<string, unknown> = {};
+        const row = {} as T;
 
         for (const [csvColumn, fieldName] of Object.entries(columnMapping)) {
             const index = columnIndices[csvColumn];
-            let value: unknown = values[index]?.trim() || "";
+            let value: CSVValue = values[index]?.trim() || "";
 
             // Convertir números
             const lowerCol = csvColumn.toLowerCase();
@@ -116,10 +122,10 @@ export function parseCSV<T extends Record<string, unknown>>(
                 value = isNaN(num) ? 0 : num;
             }
 
-            row[fieldName as string] = value;
+            row[fieldName] = value as T[keyof T];
         }
 
-        data.push(row as T);
+        data.push(row);
     }
 
     return { data, errors };
@@ -209,7 +215,7 @@ export function generateGroupsTemplate(
     ];
 
     const BOM = "\uFEFF";
-    const csvContent = [headers.join(","), exampleRow.join(",")].join("\r\n");
+    const csvContent = [headers.join(";"), exampleRow.join(";")].join("\r\n");
 
     // Agregar comentarios con valores válidos
     const notes = [

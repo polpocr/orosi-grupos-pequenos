@@ -34,7 +34,7 @@ export const modalityLabels: Record<string, string> = {
 
 export const mapModalityOptions = (opts: string[]) => {
     return opts
-        .filter(o => o !== "Virtual (Zoom/Teams)") // Remove unwanted option
+        .filter(o => o !== "Virtual (Zoom/Teams)") 
         .map(o => ({ 
             value: o, 
             label: modalityLabels[o] || o 
