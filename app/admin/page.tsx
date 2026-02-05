@@ -107,34 +107,7 @@ export default function AdminPage() {
         </div>
       )}
 
-      {/* Admin Auth Status */}
-      {adminData !== undefined && (
-        <div className="bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
-            Estado de Autenticación
-          </h3>
-          {adminData === null ? (
-            <div className="rounded-md bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 p-4 text-red-700 dark:text-red-400">
-              <p className="font-medium">Error de Autorización</p>
-              <p className="mt-1 text-sm">
-                Tu email no está registrado como administrador.
-              </p>
-            </div>
-          ) : (
-            <div className="flex items-start gap-3 rounded-md bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-900/50 p-4">
-              <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400 mt-0.5" />
-              <div>
-                <p className="font-medium text-green-700 dark:text-green-400">
-                  {adminData.message}
-                </p>
-                <p className="text-sm text-green-600 dark:text-green-500 mt-1">
-                  {adminData.user.email}
-                </p>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
+
     </div>
   );
 }
