@@ -1,9 +1,31 @@
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import { filterGroups, FilterState, getGroupTime, sortDays } from "@/app/helpers/filters";
 
 const ITEMS_PER_PAGE = 9;
+
+/*
+ Shuffle determinístico usando algoritmo Fisher-Yates con PRNG (Mulberry32)
+ Dado el mismo seed, siempre produce el mismo orden aleatorio
+ */
+function seededShuffle<T>(array: T[], seed: number): T[] {
+    const shuffled = [...array];
+    let currentSeed = seed;
+
+    // Mulberry32 PRNG - genera números pseudo-aleatorios determinísticos
+    const random = () => {
+        currentSeed = (currentSeed * 1103515245 + 12345) & 0x7fffffff;
+        return currentSeed / 0x7fffffff;
+    };
+
+    // Fisher-Yates shuffle
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+}
 
 export interface UsePublicGroupsFilters extends FilterState {
     search: string;
@@ -31,11 +53,15 @@ export function usePublicGroups(initialFilters: Partial<UsePublicGroupsFilters>)
         location: initialFilters.district || "", // Asegurar compatibilidad
     });
 
+    // Seed fijo por sesión - se genera una vez cuando el usuario carga la página
+    // Garantiza orden aleatorio pero estable mientras navega entre páginas
+    const sessionSeed = useRef(Date.now());
+
     // 1. Obtener todos los grupos (Estrategia de filtrado del lado del cliente)
     const allGroups = useQuery(api.groups.getAllPublicGroups);
     const isLoading = allGroups === undefined;
 
-    // 2. Filtrar localmente
+    // 2. Filtrar y mezclar aleatoriamente (orden estable por sesión)
     const filteredGroups = useMemo(() => {
         if (!allGroups) return [];
         // Asegurar que 'location' y 'district' estén sincronizados, filterGroups usa 'location'
@@ -43,7 +69,9 @@ export function usePublicGroups(initialFilters: Partial<UsePublicGroupsFilters>)
             ...filters,
             location: filters.district || filters.location // Preferir district si está establecido (desde URL)
         };
-        return filterGroups(allGroups, effectiveFilters, filters.search);
+        const filtered = filterGroups(allGroups, effectiveFilters, filters.search);
+        // Aplicar shuffle aleatorio con seed de sesión
+        return seededShuffle(filtered, sessionSeed.current);
     }, [allGroups, filters]);
 
     // Calcular opciones dinámicas de TODOS los grupos (no solo los filtrados)
