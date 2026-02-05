@@ -95,9 +95,9 @@ export const GroupsCategoryToolbar = ({
             {/* Scroll de Categorías Superiores */}
             <div
                 ref={scrollContainerRef}
-                className={`flex gap-3 overflow-x-auto no-scrollbar px-4 justify-start items-center transition-all duration-300 ${showFilters
+                className={`flex gap-3 overflow-x-auto md:overflow-x-visible no-scrollbar px-4 justify-start items-center md:flex-wrap transition-all duration-300 ${showFilters
                     ? 'w-full lg:pl-[280px] md:justify-center'
-                    : 'w-full md:w-auto max-w-full md:px-0 md:justify-start'
+                    : 'w-full md:w-auto max-w-full md:px-0 md:justify-center'
                     }`}
             >
                 <FilterButton
