@@ -33,9 +33,10 @@ interface GroupRegistrationModalProps {
     isOpen: boolean;
     onClose: () => void;
     onSuccess: () => void;
+    onCloseAll?: () => void;
 }
 
-export default function GroupRegistrationModal({ groupId, isOpen, onClose, onSuccess }: GroupRegistrationModalProps) {
+export default function GroupRegistrationModal({ groupId, isOpen, onClose, onSuccess, onCloseAll }: GroupRegistrationModalProps) {
     const [error, setError] = useState<string | null>(null);
     const [isGroupFull, setIsGroupFull] = useState(false);
     const registerMember = useMutation(api.public.registerMember);
@@ -49,7 +50,27 @@ export default function GroupRegistrationModal({ groupId, isOpen, onClose, onSuc
         },
     });
 
+    // Cargar datos guardados previamente si existen
+    useState(() => {
+        if (typeof window !== 'undefined') {
+            const savedData = localStorage.getItem("registration_form_data");
+            if (savedData) {
+                try {
+                    const parsed = JSON.parse(savedData);
+                    form.reset(parsed);
+                } catch (e) {
+                    console.error("Error cargando datos guardados", e);
+                }
+            }
+        }
+    });
+
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
+        // Guardar datos temporalmente para futuros intentos
+        if (typeof window !== 'undefined') {
+            localStorage.setItem("registration_form_data", JSON.stringify(values));
+        }
+
         setError(null);
         try {
             await registerMember({
@@ -96,7 +117,11 @@ export default function GroupRegistrationModal({ groupId, isOpen, onClose, onSuc
 
     const handleFullGroupClose = () => {
         setIsGroupFull(false);
-        onClose(); // Cerramos todo para volver al listado
+        if (onCloseAll) {
+            onCloseAll();
+        } else {
+            onClose();
+        }
     };
 
     return (
@@ -207,19 +232,21 @@ export default function GroupRegistrationModal({ groupId, isOpen, onClose, onSuc
                         <div className="w-16 h-16 rounded-full bg-yellow-100 flex items-center justify-center mb-2">
                             <span className="text-3xl">🟡</span>
                         </div>
-                        <AlertDialogTitle className="text-xl md:text-2xl font-bold text-slate-800">
+                        <AlertDialogTitle className="text-xl md:text-2xl font-bold text-slate-800 text-left pl-3">
                             Este grupo se acaba de completar
                         </AlertDialogTitle>
-                        <AlertDialogDescription className="text-base text-slate-600 space-y-4">
-                            <p>
-                                Gracias por tu interés 💚
-                            </p>
-                            <p>
-                                Mientras estabas completando tus datos, los últimos cupos de este grupo fueron tomados.
-                            </p>
-                            <p className="font-medium text-slate-800">
-                                En este momento ya no tenemos espacios disponibles.
-                            </p>
+                        <AlertDialogDescription className="text-base text-slate-600 space-y-4" asChild>
+                            <div className="text-left pl-3">
+                                <p>
+                                    Gracias por tu interés 💚
+                                </p>
+                                <p>
+                                    Mientras estabas completando tus datos, los últimos cupos de este grupo fueron tomados.
+                                </p>
+                                <p className="font-medium text-slate-800">
+                                    En este momento ya no tenemos espacios disponibles.
+                                </p>
+                            </div>
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter className="flex sm:justify-center pb-2 pt-4">

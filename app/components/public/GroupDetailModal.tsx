@@ -77,6 +77,7 @@ export default function GroupDetailModal({ group, isOpen, onClose, category }: G
                 groupId={group._id}
                 isOpen={true}
                 onClose={() => setView('detail')} // Volver a detalle al cancelar
+                onCloseAll={onClose} // Cerrar todo si el grupo está lleno
                 onSuccess={() => setView('success')}
             />
         );
