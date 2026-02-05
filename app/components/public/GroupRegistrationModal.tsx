@@ -85,6 +85,10 @@ export default function GroupRegistrationModal({ groupId, isOpen, onClose, onSuc
             });
             // Reset form
             form.reset();
+            // Limpiar datos guardados después de registro exitoso
+            if (typeof window !== 'undefined') {
+                localStorage.removeItem("registration_form_data");
+            }
             onSuccess();
         } catch (err: any) {
             // Intentar extraer el mensaje limpio del error de Convex
