@@ -23,7 +23,8 @@ import { Id } from "@/convex/_generated/dataModel";
 import { ConvexError } from "convex/values";
 
 const formSchema = z.object({
-    fullName: z.string().min(1, { message: "El nombre es obligatorio" }),
+    firstName: z.string().min(1, { message: "El nombre es obligatorio" }),
+    lastName: z.string().min(1, { message: "El apellido es obligatorio" }),
     email: z.string().email({ message: "Correo electrónico inválido" }),
     phone: z.string().min(1, { message: "El teléfono es obligatorio" }).regex(/^[\d\s\-\+\(\)]+$/, { message: "El teléfono solo puede contener números y símbolos válidos (+, -, paréntesis)" }),
 });
@@ -44,7 +45,8 @@ export default function GroupRegistrationModal({ groupId, isOpen, onClose, onSuc
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            fullName: "",
+            firstName: "",
+            lastName: "",
             email: "",
             phone: "",
         },
@@ -73,9 +75,11 @@ export default function GroupRegistrationModal({ groupId, isOpen, onClose, onSuc
 
         setError(null);
         try {
+            // Concatenar nombre y apellido para guardar en BD
+            const fullName = `${values.firstName.trim()} ${values.lastName.trim()}`;
             await registerMember({
                 groupId,
-                fullName: values.fullName,
+                fullName,
                 email: values.email,
                 phone: values.phone,
             });
@@ -132,7 +136,7 @@ export default function GroupRegistrationModal({ groupId, isOpen, onClose, onSuc
                     overlayClassName="bg-black/95"
                     className="w-full sm:max-w-[800px] rounded-[30px] shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 px-4 py-0 duration-200 font-raleway tracking-tight bg-white border-none"
                 >
-                    <div className="overflow-y-auto px-8 py-6 h-full flex flex-col justify-center relative">
+                    <div className="overflow-y-auto px-8 md:px-16 py-6 h-full flex flex-col justify-center relative">
                         {/* Botón Cerrar (X) absoluto en la esquina a la derecha */}
                         <button
                             onClick={onClose}
@@ -160,18 +164,32 @@ export default function GroupRegistrationModal({ groupId, isOpen, onClose, onSuc
                         )}
 
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
-                            {/* Full Name */}
-                            <div>
-                                <Input
-                                    placeholder="*Nombre Completo"
-                                    className="h-12 text-lg px-4 rounded-none border-gray-600 focus:border-slate-800 focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ring-0 ring-offset-0 outline-none transition-colors placeholder:text-gray-300 text-black"
-                                    {...form.register("fullName")}
-                                />
-                                {form.formState.errors.fullName && (
-                                    <p className="text-xs text-red-500 ml-1">
-                                        {form.formState.errors.fullName.message}
-                                    </p>
-                                )}
+                            {/* First Name & Last Name */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <div>
+                                    <Input
+                                        placeholder="*Nombre"
+                                        className="h-12 text-lg px-4 rounded-none border-gray-600 focus:border-slate-800 focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ring-0 ring-offset-0 outline-none transition-colors placeholder:text-gray-300 text-black"
+                                        {...form.register("firstName")}
+                                    />
+                                    {form.formState.errors.firstName && (
+                                        <p className="text-xs text-red-500 ml-1">
+                                            {form.formState.errors.firstName.message}
+                                        </p>
+                                    )}
+                                </div>
+                                <div>
+                                    <Input
+                                        placeholder="*Apellido"
+                                        className="h-12 text-lg px-4 rounded-none border-gray-600 focus:border-slate-800 focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ring-0 ring-offset-0 outline-none transition-colors placeholder:text-gray-300 text-black"
+                                        {...form.register("lastName")}
+                                    />
+                                    {form.formState.errors.lastName && (
+                                        <p className="text-xs text-red-500 ml-1">
+                                            {form.formState.errors.lastName.message}
+                                        </p>
+                                    )}
+                                </div>
                             </div>
 
                             {/* Email */}

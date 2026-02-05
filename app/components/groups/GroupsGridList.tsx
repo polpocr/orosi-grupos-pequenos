@@ -32,9 +32,9 @@ export const GroupsGridList = ({
 
     if (isLoading) {
         return (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {[1, 2, 3, 4, 5, 6].map(i => (
-                    <div key={i} className="h-64 bg-white/5 animate-pulse rounded-xl"></div>
+            <div className={`grid gap-9 ${showFilters ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'}`}>
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(i => (
+                    <div key={i} className="w-full aspect-4/5 bg-white/5 animate-pulse rounded-xl"></div>
                 ))}
             </div>
         );
