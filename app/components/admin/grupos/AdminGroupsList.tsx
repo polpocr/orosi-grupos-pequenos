@@ -80,16 +80,16 @@ export const AdminGroupsCards = ({ groups, dependencies, onDelete }: GroupListPr
                             <Users className="w-5 h-5" />
                         </div>
 
-                        <div className="flex-1 min-w-0 pt-0.5">
+                        <div className="flex-1 min-w-0 pt-0.5 overflow-hidden">
                             <div className="flex items-start justify-between gap-2">
-                                <h3 className="text-sm font-semibold text-slate-900 dark:text-white truncate" title={grupo.name}>
+                                <h3 className="text-sm font-semibold text-slate-900 dark:text-white truncate max-w-[180px]" title={grupo.name}>
                                     {grupo.name}
                                 </h3>
-                                <div className="-mt-1 -mr-2">
+                                <div className="-mt-1 -mr-2 shrink-0">
                                     <GroupActions group={grupo} onDelete={onDelete} />
                                 </div>
                             </div>
-                            <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
+                            <p className="text-xs text-slate-500 dark:text-slate-400 truncate max-w-[200px]" title={grupo.leaders.join(", ")}>
                                 Líderes: {grupo.leaders.join(", ")}
                             </p>
                         </div>
@@ -150,8 +150,8 @@ export const AdminGroupsTableTablet = ({ groups, dependencies, onDelete }: Group
                                         <Users className="w-4 h-4 text-blue-400" />
                                     </div>
                                     <div className="min-w-0">
-                                        <span className="text-sm font-medium text-slate-900 dark:text-white block truncate max-w-[180px]">{grupo.name}</span>
-                                        <span className="text-xs text-slate-400 block truncate max-w-[180px]">{grupo.leaders.join(", ")}</span>
+                                        <span className="text-sm font-medium text-slate-900 dark:text-white block truncate max-w-[180px]" title={grupo.name}>{grupo.name}</span>
+                                        <span className="text-xs text-slate-400 block truncate max-w-[180px]" title={grupo.leaders.join(", ")}>{grupo.leaders.join(", ")}</span>
                                     </div>
                                 </div>
                             </td>
@@ -191,15 +191,15 @@ export const AdminGroupsTable = ({ groups, dependencies, onDelete }: GroupListPr
                 <tbody className="divide-y divide-slate-200 dark:divide-neutral-800">
                     {groups.map((grupo) => (
                         <tr key={grupo._id} className="hover:bg-slate-50 dark:hover:bg-neutral-800 transition-colors">
-                            <td className="px-6 py-2.5 whitespace-nowrap">
+                            <td className="px-6 py-2.5">
                                 <div className="flex items-center gap-3">
-                                    <div className="h-8 w-8 flex items-center justify-center bg-blue-900/20 rounded-lg">
+                                    <div className="h-8 w-8 shrink-0 flex items-center justify-center bg-blue-900/20 rounded-lg">
                                         <Users className="w-4 h-4 text-blue-400" />
                                     </div>
-                                    <span className="text-sm font-medium text-slate-900 dark:text-white">{grupo.name}</span>
+                                    <span className="text-sm font-medium text-slate-900 dark:text-white truncate max-w-[200px]" title={grupo.name}>{grupo.name}</span>
                                 </div>
                             </td>
-                            <td className="px-6 py-2.5 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">{grupo.leaders.join(", ")}</td>
+                            <td className="px-6 py-2.5 text-sm text-slate-500 dark:text-slate-400"><span className="block truncate max-w-[180px]" title={grupo.leaders.join(", ")}>{grupo.leaders.join(", ")}</span></td>
                             <td className="px-6 py-2.5 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">{getDistrictName(grupo.districtId, dependencies?.districts)}</td>
                             <td className="px-6 py-2.5 whitespace-nowrap"><CategoryBadge categoryId={grupo.categoryId} categories={dependencies?.categories} /></td>
                             <td className="px-6 py-2.5 whitespace-nowrap text-sm text-slate-900 dark:text-white font-medium">

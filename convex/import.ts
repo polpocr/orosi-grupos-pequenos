@@ -25,8 +25,8 @@ export const getImportTemplate = query({
 // Tipo para un grupo del CSV
 const csvGroupValidator = v.object({
     name: v.string(),
-    description: v.string(),
-    capacity: v.number(),
+    description: v.optional(v.string()), // Ahora opcional
+    capacity: v.optional(v.number()), // Ahora opcional, podemos poner default 0 en backend si queremos
     seasonName: v.string(),
     categoryName: v.string(),
     districtName: v.string(),
@@ -34,10 +34,11 @@ const csvGroupValidator = v.object({
     time: v.string(),
     modality: v.string(),
     leaders: v.string(), // Viene como string separado por comas
-    minAge: v.number(),
-    maxAge: v.number(),
+    minAge: v.optional(v.number()),
+    maxAge: v.optional(v.number()),
     address: v.optional(v.string()),
     targetAudience: v.optional(v.string()),
+    geoReferencia: v.optional(v.string()),
 });
 
 interface ValidationResult {
@@ -59,6 +60,7 @@ interface ValidationResult {
         maxAge: number;
         address?: string;
         targetAudience?: string;
+        geoReferencia?: string;
     };
 }
 
@@ -68,7 +70,7 @@ function normalizeModality(modality: string): string | null {
     
     if (lower.includes("presencial")) return "Presencial";
     if (lower.includes("virtual") || lower.includes("zoom") || lower.includes("teams") || lower.includes("online")) return "Virtual";
-    if (lower.includes("híbrido") || lower.includes("hibrido") || lower.includes("mixto")) return "Híbrido";
+    if (lower.includes("híbrido") || lower.includes("hibrido") || lower.includes("mixto") || lower.includes("ambos")) return "Híbrido";
     
     return null;
 }
@@ -102,8 +104,7 @@ export const validateGroups = mutation({
 
             // Validar campos obligatorios
             if (!group.name?.trim()) errors.push("Nombre es obligatorio");
-            if (!group.description?.trim()) errors.push("Descripción es obligatoria");
-            if (!group.capacity || group.capacity <= 0) errors.push("Capacidad debe ser mayor a 0");
+            // Description ya no es obligatoria para validar, se pone empty string si falta
 
             // Buscar IDs por nombre
             const category = categories.find(
@@ -126,8 +127,8 @@ export const validateGroups = mutation({
                 errors.push(`Ya existe un grupo llamado '${group.name}'`);
             }
 
-            // Validar edades
-            if (group.minAge > group.maxAge) {
+            // Validar edades solo si están presentes
+            if (group.minAge !== undefined && group.maxAge !== undefined && group.minAge > group.maxAge) {
                 errors.push("Edad mínima no puede ser mayor que la máxima");
             }
 
@@ -149,8 +150,8 @@ export const validateGroups = mutation({
                 errors,
                 data: errors.length === 0 ? {
                     name: group.name.trim(),
-                    description: group.description.trim(),
-                    capacity: group.capacity,
+                    description: group.description?.trim() || "",
+                    capacity: group.capacity || 0,
                     seasonId: season!._id,
                     categoryId: category!._id,
                     districtId: district!._id,
@@ -158,10 +159,11 @@ export const validateGroups = mutation({
                     time: group.time,
                     modality: normalizedModality || group.modality,
                     leaders: group.leaders?.split(",").map((l) => l.trim()).filter(Boolean) || [],
-                    minAge: group.minAge,
-                    maxAge: group.maxAge,
+                    minAge: group.minAge || 0,
+                    maxAge: group.maxAge || 99,
                     address: group.address?.trim() || undefined,
                     targetAudience: group.targetAudience?.trim() || undefined,
+                    geoReferencia: group.geoReferencia?.trim() || undefined,
                 } : undefined,
             });
         }
@@ -199,6 +201,7 @@ export const importGroups = mutation({
                 maxAge: v.number(),
                 address: v.optional(v.string()),
                 targetAudience: v.optional(v.string()),
+                geoReferencia: v.optional(v.string()),
             })
         ),
     },

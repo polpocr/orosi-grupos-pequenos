@@ -243,6 +243,16 @@ export const update = mutation({
 export const remove = mutation({
     args: { id: v.id("groups") },
     handler: async (ctx, args) => {
+        // Eliminar miembros del grupo
+        const members = await ctx.db
+            .query("members")
+            .withIndex("by_group", (q) => q.eq("groupId", args.id))
+            .collect();
+        
+        for (const member of members) {
+            await ctx.db.delete(member._id);
+        }
+        
         await ctx.db.delete(args.id);
     },
 });

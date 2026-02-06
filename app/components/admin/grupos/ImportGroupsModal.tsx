@@ -20,9 +20,17 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 import { AlertCircle, CheckCircle2, FileSpreadsheet } from "lucide-react";
 import { toast } from "sonner";
-import { parseCSV, generateGroupsTemplate } from "@/app/helpers/export";
+import { generateGroupsTemplate } from "@/app/helpers/export";
 import { Id } from "@/convex/_generated/dataModel";
 import {
     FileUploadZone,
@@ -30,93 +38,17 @@ import {
     ImportSummaryCards,
     ImportSuccessMessage,
 } from "@/app/components/admin/shared/ImportComponents";
+import * as XLSX from "xlsx";
+import { processImportData, readFileWithEncoding } from "@/app/helpers/import-helpers";
+import { CSVGroup, ValidationResult } from "@/app/types/import-types";
+
 
 interface ImportGroupsModalProps {
     isOpen: boolean;
     onClose: () => void;
 }
 
-interface CSVGroup {
-    [key: string]: string | number | undefined;
-    name: string;
-    description: string;
-    capacity: number;
-    seasonName: string;
-    categoryName: string;
-    districtName: string;
-    day: string;
-    time: string;
-    modality: string;
-    leaders: string;
-    minAge: number;
-    maxAge: number;
-    address?: string;
-    targetAudience?: string;
-}
-
-interface ValidationResult {
-    row: number;
-    isValid: boolean;
-    errors: string[];
-    data?: {
-        name: string;
-        description: string;
-        capacity: number;
-        seasonId: Id<"seasons">;
-        categoryId: Id<"categories">;
-        districtId: Id<"districts">;
-        day: string;
-        time: string;
-        modality: string;
-        leaders: string[];
-        minAge: number;
-        maxAge: number;
-        address?: string;
-        targetAudience?: string;
-    };
-}
-
-// Mapeo de columnas CSV a campos del objeto
-const CSV_COLUMN_MAPPING: Record<string, keyof CSVGroup> = {
-    "Nombre": "name",
-    "Descripcion": "description",
-    "Capacidad": "capacity",
-    "Temporada": "seasonName",
-    "Categoria": "categoryName",
-    "Distrito": "districtName",
-    "Dia": "day",
-    "Hora": "time",
-    "Modalidad": "modality",
-    "Facilitadores": "leaders",
-    "EdadMinima": "minAge",
-    "EdadMaxima": "maxAge",
-    "Direccion": "address",
-    "PublicoObjetivo": "targetAudience",
-};
-
 type ImportStep = "upload" | "preview" | "result";
-
-// Función para leer archivo intentando diferentes codificaciones
-async function readFileWithEncoding(file: File): Promise<string> {
-    const buffer = await file.arrayBuffer();
-
-    // Primero intenta UTF-8
-    const utf8Text = new TextDecoder("utf-8").decode(buffer);
-
-    // Si hay caracteres de reemplazo (�), probablemente no es UTF-8
-    if (!utf8Text.includes("\uFFFD")) {
-        return utf8Text;
-    }
-
-    // Intenta Windows-1252 (Latin1) - común en Excel español
-    try {
-        const latin1Text = new TextDecoder("windows-1252").decode(buffer);
-        return latin1Text;
-    } catch {
-        // Si falla, devuelve UTF-8 de todos modos
-        return utf8Text;
-    }
-}
 
 export default function ImportGroupsModal({ isOpen, onClose }: ImportGroupsModalProps) {
     const [step, setStep] = useState<ImportStep>("upload");
@@ -125,6 +57,7 @@ export default function ImportGroupsModal({ isOpen, onClose }: ImportGroupsModal
     const [summary, setSummary] = useState({ total: 0, valid: 0, invalid: 0 });
     const [isProcessing, setIsProcessing] = useState(false);
     const [importResult, setImportResult] = useState<{ success: boolean; count: number } | null>(null);
+    const [selectedSeason, setSelectedSeason] = useState<string>("");
 
     const templateData = useQuery(api.import.getImportTemplate);
     const validateGroups = useMutation(api.import.validateGroups);
@@ -149,17 +82,45 @@ export default function ImportGroupsModal({ isOpen, onClose }: ImportGroupsModal
     };
 
     const handleFileSelect = async (file: File) => {
-        if (!file.name.endsWith(".csv")) {
-            toast.error("Solo se permiten archivos CSV");
-            return;
-        }
-
         setIsProcessing(true);
+        setParsedData([]);
 
         try {
-            // Intentar leer con diferentes codificaciones
-            const content = await readFileWithEncoding(file);
-            const { data, errors } = parseCSV<CSVGroup>(content, CSV_COLUMN_MAPPING);
+            let info: { data: any[], headers: string[] } = { data: [], headers: [] };
+
+            if (file.name.endsWith(".csv")) {
+                const text = await readFileWithEncoding(file);
+                const wb = XLSX.read(text, { type: "string" });
+                const ws = wb.Sheets[wb.SheetNames[0]];
+                const jsonData = XLSX.utils.sheet_to_json(ws, { header: 1 });
+
+                if (jsonData.length > 0) {
+                    info.headers = jsonData[0] as string[];
+                    info.data = jsonData.slice(1);
+                }
+            } else if (file.name.endsWith(".xlsx") || file.name.endsWith(".xls")) {
+                const buffer = await file.arrayBuffer();
+                const wb = XLSX.read(buffer, { type: "array" });
+                const ws = wb.Sheets[wb.SheetNames[0]];
+                const jsonData = XLSX.utils.sheet_to_json(ws, { header: 1 });
+
+                if (jsonData.length > 0) {
+                    info.headers = jsonData[0] as string[];
+                    info.data = jsonData.slice(1);
+                }
+            } else {
+                toast.error("Formato no soportado. Usa .csv o .xlsx");
+                setIsProcessing(false);
+                return;
+            }
+
+            if (info.data.length === 0) {
+                toast.error("El archivo está vacío");
+                setIsProcessing(false);
+                return;
+            }
+
+            const { data, errors } = processImportData(info.data, info.headers, selectedSeason);
 
             if (errors.length > 0) {
                 toast.error(errors[0]);
@@ -168,21 +129,21 @@ export default function ImportGroupsModal({ isOpen, onClose }: ImportGroupsModal
             }
 
             if (data.length === 0) {
-                toast.error("El archivo no contiene datos válidos");
+                toast.error("No se encontraron datos de grupos válidos (¿Falta columna Nombre?)");
                 setIsProcessing(false);
                 return;
             }
 
             setParsedData(data);
 
-            // Validar en el backend
             const result = await validateGroups({ groups: data });
             setValidationResults(result.results as ValidationResult[]);
             setSummary(result.summary);
             setStep("preview");
+
         } catch (error) {
-            toast.error("Error al procesar el archivo");
             console.error(error);
+            toast.error("Error al procesar el archivo");
         } finally {
             setIsProcessing(false);
         }
@@ -207,6 +168,7 @@ export default function ImportGroupsModal({ isOpen, onClose }: ImportGroupsModal
                     seasonId: g.seasonId as Id<"seasons">,
                     categoryId: g.categoryId as Id<"categories">,
                     districtId: g.districtId as Id<"districts">,
+                    geoReferencia: g.geoReferencia,
                 })),
             });
             setImportResult(result);
@@ -226,6 +188,7 @@ export default function ImportGroupsModal({ isOpen, onClose }: ImportGroupsModal
         setValidationResults([]);
         setSummary({ total: 0, valid: 0, invalid: 0 });
         setImportResult(null);
+        setSelectedSeason("");
         onClose();
     };
 
@@ -235,10 +198,10 @@ export default function ImportGroupsModal({ isOpen, onClose }: ImportGroupsModal
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
                         <FileSpreadsheet className="h-5 w-5" />
-                        Importar Grupos desde CSV
+                        Importar Grupos
                     </DialogTitle>
                     <DialogDescription>
-                        {step === "upload" && "Sube un archivo CSV con los grupos a importar"}
+                        {step === "upload" && "Sube un archivo Excel (.xlsx) o CSV con los grupos a importar."}
                         {step === "preview" && "Revisa los datos antes de importar"}
                         {step === "result" && "Resultado de la importación"}
                     </DialogDescription>
@@ -251,8 +214,8 @@ export default function ImportGroupsModal({ isOpen, onClose }: ImportGroupsModal
                             <FileUploadZone
                                 onFileSelect={handleFileSelect}
                                 isProcessing={isProcessing}
-                                accept=".csv"
-                                description="Solo archivos .csv"
+                                accept=".csv,.xlsx,.xls"
+                                description="Arrastra un archivo .xlsx o .csv aquí"
                             />
                             <div className="flex items-center justify-center">
                                 <DownloadTemplateButton
@@ -273,7 +236,6 @@ export default function ImportGroupsModal({ isOpen, onClose }: ImportGroupsModal
                                 invalid={summary.invalid}
                             />
 
-                            {/* Validation Results Table */}
                             <div className="border rounded-lg overflow-hidden">
                                 <Table>
                                     <TableHeader>
@@ -305,6 +267,8 @@ export default function ImportGroupsModal({ isOpen, onClose }: ImportGroupsModal
                                                     {result.isValid ? (
                                                         <span className="text-muted-foreground">
                                                             {parsedData[idx]?.categoryName} • {parsedData[idx]?.districtName}
+                                                            {parsedData[idx]?.seasonName ? ` • ${parsedData[idx]?.seasonName}` : ""}
+                                                            {parsedData[idx]?.geoReferencia ? ` • 📍` : ""}
                                                         </span>
                                                     ) : (
                                                         <ul className="list-disc list-inside text-red-600 dark:text-red-400">

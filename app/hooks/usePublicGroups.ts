@@ -74,17 +74,36 @@ export function usePublicGroups(initialFilters: Partial<UsePublicGroupsFilters>)
         return seededShuffle(filtered, sessionSeed.current);
     }, [allGroups, filters]);
 
-    // Calcular opciones dinámicas de TODOS los grupos (no solo los filtrados)
+    // Opciones fijas predefinidas
+    const FIXED_DAYS = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
+    const FIXED_SCHEDULES = ["Manana", "Tarde", "Noche"];
+    const FIXED_MODALITIES = ["Presencial", "Virtual", "Híbrido"];
+    const FIXED_TARGETS = ["Hombres", "Mujeres", "Mixto"];
+
+    // Calcular opciones: combinar fijas + dinámicas (sin duplicados)
     const options = useMemo(() => {
-        if (!allGroups) return { modalities: [], days: [], schedules: [], targets: [] };
+        if (!allGroups) return { 
+            modalities: FIXED_MODALITIES, 
+            days: FIXED_DAYS, 
+            schedules: FIXED_SCHEDULES, 
+            targets: FIXED_TARGETS 
+        };
         
-        const modalities = Array.from(new Set(allGroups.map(g => g.modality).filter(Boolean))).sort();
-        const days = sortDays(Array.from(new Set(allGroups.map(g => g.day).filter(Boolean))));
-        const schedules = Array.from(new Set(allGroups.map(g => getGroupTime(g.time)).filter(Boolean))).sort();
-        const targets = Array.from(new Set(allGroups.map(g => g.targetAudience).filter((t): t is string => !!t))).sort();
+        // Dinámicas de los datos
+        const dynamicModalities = Array.from(new Set(allGroups.map(g => g.modality).filter(Boolean)));
+        const dynamicDays = Array.from(new Set(allGroups.map(g => g.day).filter(Boolean)));
+        const dynamicSchedules = Array.from(new Set(allGroups.map(g => getGroupTime(g.time)).filter(Boolean)));
+        const dynamicTargets = Array.from(new Set(allGroups.map(g => g.targetAudience).filter((t): t is string => !!t)));
+
+        // Merge fijas + dinámicas (sin duplicados)
+        const modalities = Array.from(new Set([...FIXED_MODALITIES, ...dynamicModalities])).sort();
+        const days = sortDays(Array.from(new Set([...FIXED_DAYS, ...dynamicDays])));
+        const schedules = Array.from(new Set([...FIXED_SCHEDULES, ...dynamicSchedules]));
+        const targets = Array.from(new Set([...FIXED_TARGETS, ...dynamicTargets])).sort();
 
         return { modalities, days, schedules, targets };
     }, [allGroups]);
+
 
     // 3. Paginar localmente
     const visibleGroups = useMemo(() => {

@@ -100,6 +100,12 @@ export default function AdminPage() {
                   <p className="text-xs text-slate-500 dark:text-slate-400">
                     {cat.count} {cat.count === 1 ? "grupo" : "grupos"}
                   </p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    Total de cupos: {cat.totalCapacity}
+                  </p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    Total de inscritos: {cat.totalMembers}
+                  </p>
                 </div>
               </div>
             ))}

@@ -21,11 +21,16 @@ export const getStats = query({
         const fullGroups = groups.filter(g => g.currentMembersCount >= g.capacity).length;
 
         // Distribución por categoría
-        const groupsByCategory = categories.map(cat => ({
-            name: cat.name,
-            color: cat.color,
-            count: groups.filter(g => g.categoryId === cat._id).length,
-        }));
+        const groupsByCategory = categories.map(cat => {
+            const categoryGroups = groups.filter(g => g.categoryId === cat._id);
+            return {
+                name: cat.name,
+                color: cat.color,
+                count: categoryGroups.length,
+                totalCapacity: categoryGroups.reduce((sum, g) => sum + g.capacity, 0),
+                totalMembers: categoryGroups.reduce((sum, g) => sum + g.currentMembersCount, 0),
+            };
+        });
 
         return {
             totalGroups,

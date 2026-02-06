@@ -29,7 +29,7 @@ export const mapSimpleOptions = (opts: string[]) => opts.map(o => ({ value: o, l
 export const mapScheduleOptions = (opts: string[]) => opts.map(o => ({ value: o, label: scheduleLabels[o] || o }));
 
 export const modalityLabels: Record<string, string> = {
-    "Híbrido": "Híbrido (presencial-virtual)",
+    "Híbrido": "Ambos (presencial-virtual)",
 };
 
 export const mapModalityOptions = (opts: string[]) => {
@@ -46,7 +46,21 @@ export const mapDistrictOptions = (dists: { _id: string; name: string }[]) => di
 // Helper Functions
 export const getGroupTime = (timeStr?: string) => {
     if (!timeStr) return "Noche";
-    const hour = parseInt(timeStr.split(":")[0]);
+    
+    const normalized = timeStr.toLowerCase().trim();
+    
+    // Extraer hora y detectar AM/PM
+    const match = normalized.match(/(\d{1,2})(?::(\d{2}))?\s*(am|pm)?/i);
+    if (!match) return "Noche";
+    
+    let hour = parseInt(match[1]);
+    const isPM = match[3]?.toLowerCase() === "pm";
+    const isAM = match[3]?.toLowerCase() === "am";
+    
+    // Convertir a formato 24h si tiene AM/PM
+    if (isPM && hour < 12) hour += 12;
+    if (isAM && hour === 12) hour = 0;
+    
     if (hour < 12) return "Manana";
     if (hour < 18) return "Tarde";
     return "Noche";
